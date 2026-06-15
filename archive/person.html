@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARCHIVE</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header id="header">
+    <div class="header-inner">
+
+      <a href="index.html" class="logo">ARCHIVE <span>JP</span></a>
+
+      <nav class="main-nav">
+        <a href="index.html">Works</a>
+        <a href="index.html#people-section">Creators</a>
+        <a href="index.html#brands-section">Brands</a>
+        <a href="index.html#role-section">By Role</a>
+        <a href="#">Submit</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="index.html" class="btn-submit">← Back to Works</a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========== MOBILE MENU ========== -->
+  <nav id="mobile-menu">
+    <a href="index.html">Works</a>
+    <a href="index.html#people-section">Creators</a>
+    <a href="index.html#brands-section">Brands</a>
+    <a href="index.html#role-section">By Role</a>
+    <a href="#">Submit Work</a>
+  </nav>
+
+  <!-- ========== MAIN ========== -->
+  <main id="person-main">
+
+    <!-- Person Profile -->
+    <section id="person-header-section" style="border-bottom:1px solid var(--border);padding:48px 0 40px;">
+      <div class="container">
+        <a href="index.html" class="back-link">← Works</a>
+        <div id="person-header">
+          <!-- Rendered by person.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Person Works -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">
+            Works
+            <span id="person-works-count" style="font-weight:400;color:var(--text-muted);margin-left:8px;font-size:12px;"></span>
+          </h2>
+        </div>
+        <div id="person-works-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+          <!-- Rendered by person.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">ARCHIVE</div>
+          <div class="footer-tagline">Japan Fashion Production Credits</div>
+        </div>
+        <nav class="footer-links">
+          <a href="#">About</a>
+          <a href="#">Submit Work</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+        </nav>
+      </div>
+      <div class="footer-copy">© 2024 ARCHIVE JP. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/person.js"></script>
+</body>
+</html>
