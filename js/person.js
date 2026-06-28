@@ -20,9 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const personWorks  = works.filter(w => w.credits.some(c => c.person === person.name));
 
   renderPersonHeader(person, agency, personWorks.length);
+  renderPortfolioGallery(person);
   renderPersonWorks(personWorks, person.name);
   initHeaderScroll();
   initMobileMenu();
+  initLightbox();
 });
 
 
@@ -37,6 +39,23 @@ function renderPersonHeader(person, agency, workCount) {
          ${person.is_verified ? `<div class="verified-dot"></div>` : ""}
        </div>`;
 
+  const contactHTML = agency
+    ? `
+      <a class="person-agency-link" href="agency.html?id=${agency.id}">
+        <span class="person-agency-label">所属事務所</span>
+        ${agency.name}
+      </a>
+      ${agency.website && agency.website !== "#"
+        ? `<a class="btn-booking" href="${agency.website}" target="_blank" rel="noopener">Book via Agency →</a>`
+        : ""}
+      ${person.instagram_url
+        ? `<a class="person-insta-link person-insta-secondary" href="${person.instagram_url}" target="_blank" rel="noopener">Instagram (personal)</a>`
+        : ""}
+    `
+    : `${person.instagram_url
+        ? `<a class="person-insta-link" href="${person.instagram_url}" target="_blank" rel="noopener">Instagram →</a>`
+        : ""}`;
+
   el.innerHTML = `
     <div class="person-profile-inner">
       ${photoHTML}
@@ -44,17 +63,81 @@ function renderPersonHeader(person, agency, workCount) {
         <div class="person-profile-role">${ROLE_LABEL[person.primary_role] || person.primary_role}</div>
         <h1 class="person-profile-name">${person.name}</h1>
         <div class="person-profile-name-en">${person.name_en}</div>
-        ${agency ? `<div class="person-profile-agency">${agency.name}</div>` : ""}
         <div class="person-profile-tags">
           ${person.tags.map(t => `<span class="ptag">${t}</span>`).join("")}
         </div>
         <div class="person-profile-stats"><strong>${workCount}</strong> works</div>
-        ${person.instagram_url
-          ? `<a href="${person.instagram_url}" class="person-insta-link" target="_blank" rel="noopener">Instagram →</a>`
-          : ""}
+        <div class="person-contact-area">${contactHTML}</div>
       </div>
     </div>
   `;
+}
+
+
+function renderPortfolioGallery(person) {
+  if (!person.portfolio_images || person.portfolio_images.length === 0) return;
+  const section = document.getElementById("person-gallery-section");
+  const grid    = document.getElementById("person-gallery");
+  if (!section || !grid) return;
+
+  section.style.display = "";
+  grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;";
+  grid.innerHTML = person.portfolio_images.map((url, i) => `
+    <div class="gallery-item" data-index="${i}" style="cursor:pointer;overflow:hidden;aspect-ratio:3/4;background:#111;">
+      <img src="${url}" alt="Photo ${i + 1}"
+           style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease;"
+           loading="lazy"
+           onmouseover="this.style.transform='scale(1.04)'"
+           onmouseout="this.style.transform='scale(1)'">
+    </div>
+  `).join("");
+
+  grid.querySelectorAll(".gallery-item").forEach(item => {
+    item.addEventListener("click", () => openLightbox(person.portfolio_images, parseInt(item.dataset.index)));
+  });
+}
+
+
+let _lbImages = [];
+let _lbIndex  = 0;
+
+function openLightbox(images, index) {
+  _lbImages = images;
+  _lbIndex  = index;
+  const lb = document.getElementById("lightbox");
+  lb.querySelector("#lb-img").src = images[index];
+  lb.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").style.display = "none";
+  document.body.style.overflow = "";
+}
+
+function initLightbox() {
+  if (document.getElementById("lightbox")) return;
+
+  const lb = document.createElement("div");
+  lb.id = "lightbox";
+  lb.style.cssText = "display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;";
+  lb.innerHTML = `
+    <button onclick="closeLightbox()" style="position:absolute;top:20px;right:24px;color:#fff;font-size:28px;background:none;border:none;cursor:pointer;opacity:0.7;">✕</button>
+    <button onclick="_lbIndex=(_lbIndex-1+_lbImages.length)%_lbImages.length;document.getElementById('lb-img').src=_lbImages[_lbIndex]"
+            style="position:absolute;left:20px;color:#fff;font-size:36px;background:none;border:none;cursor:pointer;opacity:0.7;">‹</button>
+    <img id="lb-img" src="" style="max-width:90vw;max-height:90vh;object-fit:contain;display:block;">
+    <button onclick="_lbIndex=(_lbIndex+1)%_lbImages.length;document.getElementById('lb-img').src=_lbImages[_lbIndex]"
+            style="position:absolute;right:20px;color:#fff;font-size:36px;background:none;border:none;cursor:pointer;opacity:0.7;">›</button>
+  `;
+  lb.addEventListener("click", e => { if (e.target === lb) closeLightbox(); });
+  document.body.appendChild(lb);
+
+  document.addEventListener("keydown", e => {
+    if (lb.style.display === "none") return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft")  { _lbIndex = (_lbIndex - 1 + _lbImages.length) % _lbImages.length; document.getElementById("lb-img").src = _lbImages[_lbIndex]; }
+    if (e.key === "ArrowRight") { _lbIndex = (_lbIndex + 1) % _lbImages.length; document.getElementById("lb-img").src = _lbImages[_lbIndex]; }
+  });
 }
 
 

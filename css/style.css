@@ -103,10 +103,9 @@ ul, ol { list-style: none; }
 }
 
 .logo {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -859,7 +858,7 @@ a.person-row:hover { opacity: 0.5; }
 
 
 /* ===========================
-   CREDIT LINKS
+   CREDIT LINKS & AGENCY TAG
    =========================== */
 .credit-link {
   color: var(--text);
@@ -868,6 +867,23 @@ a.person-row:hover { opacity: 0.5; }
   transition: border-color var(--ease);
 }
 .credit-link:hover { border-bottom-color: var(--text); }
+
+.credit-agency-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 2px;
+  margin-left: 4px;
+  vertical-align: middle;
+  text-decoration: none;
+  transition: border-color var(--ease), color var(--ease);
+}
+.credit-agency-tag:hover { color: var(--text); border-color: var(--text-muted); }
 
 a.person-card {
   display: block;
@@ -957,10 +973,136 @@ a.person-card {
   margin-bottom: 12px;
 }
 
-.person-profile-agency {
+/* Contact area: booking button & agency link */
+.person-contact-area { margin-top: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+
+.person-agency-link {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color var(--ease);
+}
+.person-agency-link:hover { color: var(--accent); }
+.person-agency-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.btn-booking {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--text);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: opacity var(--ease);
+  margin-top: 4px;
+}
+.btn-booking:hover { opacity: 0.75; }
+
+.person-insta-secondary {
+  font-size: 10px;
+  opacity: 0.55;
+  margin-top: 0;
+}
+
+/* Agency page */
+.agency-profile-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+.agency-avatar {
+  width: 72px; height: 72px;
+  border-radius: var(--radius);
+  background: var(--text);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.agency-profile-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  margin-top: 6px;
+}
+
+/* Homepage agencies index grid */
+.agency-index-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 48px;
+}
+
+a.agency-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-light);
+  text-decoration: none;
+  color: inherit;
+  transition: opacity var(--ease);
+}
+a.agency-row:hover { opacity: 0.65; }
+
+.agency-row-avatar {
+  width: 44px; height: 44px;
+  border-radius: var(--radius);
+  background: var(--text);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.agency-row-info { flex: 1; min-width: 0; }
+.agency-row-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agency-row-sub {
   font-size: 11px;
   color: var(--text-muted);
-  margin-bottom: 12px;
+  margin-top: 2px;
+}
+.agency-row-arrow {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Agency detail page roster */
+.agency-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 48px;
 }
 
 .person-profile-tags {
@@ -1136,10 +1278,10 @@ a.person-card {
 }
 
 @media (max-width: 520px) {
-  #works-grid { grid-template-columns: 1fr; }
-  .work-card.featured { grid-column: span 1; }
-  .work-card.featured .card-image { aspect-ratio: 4/3; }
+  #works-grid { grid-template-columns: repeat(2, 1fr); }
   #people-grid { grid-template-columns: repeat(2, 1fr); }
+  .agency-index-grid { grid-template-columns: 1fr; }
+  .agency-roster-grid { grid-template-columns: 1fr; }
 }
 
 

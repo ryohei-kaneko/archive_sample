@@ -26,9 +26,6 @@ function renderWorks() {
     return matchType && matchRole && matchQ;
   });
 
-  const countEl = document.getElementById("works-count");
-  if (countEl) countEl.textContent = filtered.length;
-
   grid.innerHTML = filtered.length === 0
     ? `<div class="no-results">No works found.</div>`
     : filtered.map(renderCard).join("");
@@ -181,6 +178,27 @@ function renderBrands() {
 }
 
 
+// ── Render: Agencies ──
+function renderAgencies() {
+  const grid = document.getElementById("agencies-grid");
+  if (!grid) return;
+
+  grid.className = "agency-index-grid";
+  grid.innerHTML = agencies.map(ag => {
+    const typeLabel = ag.type === "model" ? "Model Agency" : "Creative Agency";
+    return `
+      <a class="agency-row" href="agency.html?id=${ag.id}">
+        <div class="agency-row-avatar">${ag.name.slice(0, 1)}</div>
+        <div class="agency-row-info">
+          <div class="agency-row-name">${ag.name}</div>
+          <div class="agency-row-sub">${typeLabel}</div>
+        </div>
+        <div class="agency-row-arrow">→</div>
+      </a>
+    `;
+  }).join("");
+}
+
 function clearRoleHighlight() {
   document.querySelectorAll(".role-nav-card").forEach(c => c.classList.remove("active"));
 }
@@ -241,30 +259,15 @@ function initHeaderScroll() {
 }
 
 
-// ── Stats counter ──
-function animateCounters() {
-  document.querySelectorAll(".stat-num[data-target]").forEach(el => {
-    const target = parseInt(el.dataset.target, 10);
-    let cur = 0;
-    const step = Math.max(1, Math.ceil(target / 40));
-    const timer = setInterval(() => {
-      cur = Math.min(cur + step, target);
-      el.textContent = cur.toLocaleString();
-      if (cur >= target) clearInterval(timer);
-    }, 18);
-  });
-}
-
-
 // ── Init ──
 document.addEventListener("DOMContentLoaded", () => {
   renderFilters();
   renderWorks();
   renderPeople();
   renderBrands();
+  renderAgencies();
   initSearch();
   initMobileMenu();
   initHeaderScroll();
   initModal();
-  setTimeout(animateCounters, 400);
 });

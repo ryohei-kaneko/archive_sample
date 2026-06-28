@@ -136,6 +136,38 @@ const people = [
     color: "#384060", is_verified: true,
   },
   {
+    id: "p-keita",
+    name: "ウツミ ケイタ", name_kana: "うつみ けいた", name_en: "Keita Utsumi",
+    primary_role: "model", roles: ["model"],
+    agency_id: "a-n8",
+    tags: ["メンズ", "LOOKブック", "キャンペーン", "エディトリアル"],
+    bio: "NUMBER EIGHT MODELS所属。身長188cm。",
+    instagram_url: "https://www.instagram.com/mnik_ta/",
+    profile_image: "https://numbereight-models.jp/wp-content/uploads/2020/09/TOP.jpg",
+    portfolio_images: [
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k9.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/K2-2.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k2-3.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/IMG_6462.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k4-1.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k7-1.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/gs.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k5-1.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k3-1.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k3.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/IMG_4234.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/3-2.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k2.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k1.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/IMG_4049-1.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k5-2.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k6-2.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k4-2.jpg",
+      "https://numbereight-models.jp/wp-content/uploads/2020/09/k3-2.jpg",
+    ],
+    color: "#1A2030", is_verified: true,
+  },
+  {
     id: "p-jumpei",
     name: "岡﨑 順平", name_kana: "おかざき じゅんぺい", name_en: "Jumpei Okazaki",
     primary_role: "model", roles: ["model"],
@@ -413,8 +445,12 @@ function getWorkColor(type) {
 
 function buildCreditNameHTML(name, linkPrefix) {
   const match = people.find(p => p.name === name);
-  if (match) {
-    return `<a class="credit-name credit-link" href="${linkPrefix}person.html?id=${match.id}">${name}</a>`;
-  }
-  return `<span class="credit-name">${name}</span>`;
+  if (!match) return `<span class="credit-name">${name}</span>`;
+
+  const agency = match.agency_id ? agencies.find(a => a.id === match.agency_id) : null;
+  const agencyBadge = agency
+    ? ` <a class="credit-agency-tag" href="${linkPrefix}agency.html?id=${agency.id}">${agency.name}</a>`
+    : "";
+
+  return `<a class="credit-name credit-link" href="${linkPrefix}person.html?id=${match.id}">${name}</a>${agencyBadge}`;
 }

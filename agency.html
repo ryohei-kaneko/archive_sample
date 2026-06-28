@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARCHIVE</title>
+  <title>ARCHIVE — Agency</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,24 +14,18 @@
   <!-- ========== HEADER ========== -->
   <header id="header">
     <div class="header-inner">
-
       <a href="index.html" class="logo">ARCHIVE <span>JP</span></a>
-
       <nav class="main-nav">
         <a href="index.html">Works</a>
         <a href="index.html#people-section">Creators</a>
         <a href="index.html#brands-section">Brands</a>
-        <a href="index.html#role-section">By Role</a>
-        <a href="#">Submit</a>
       </nav>
-
       <div class="header-actions">
-        <a href="index.html" class="btn-submit">← Back to Works</a>
+        <a href="index.html" class="btn-submit">← Back</a>
         <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
-
     </div>
   </header>
 
@@ -40,51 +34,63 @@
     <a href="index.html">Works</a>
     <a href="index.html#people-section">Creators</a>
     <a href="index.html#brands-section">Brands</a>
-    <a href="index.html#role-section">By Role</a>
-    <a href="#">Submit Work</a>
   </nav>
 
   <!-- ========== MAIN ========== -->
-  <main id="person-main">
+  <main id="agency-main">
 
-    <!-- Person Profile -->
-    <section id="person-header-section" style="border-bottom:1px solid var(--border);padding:48px 0 40px;">
+    <!-- Agency Header -->
+    <section id="agency-header-section" style="border-bottom:1px solid var(--border);padding:48px 0 40px;">
       <div class="container">
         <a href="index.html" class="back-link">← Works</a>
-        <div id="person-header">
-          <!-- Rendered by person.js -->
+        <div id="agency-header">
+          <!-- Rendered by agency.js -->
         </div>
       </div>
     </section>
 
-    <!-- Portfolio Gallery -->
-    <section id="person-gallery-section" class="section" style="display:none;">
+    <!-- Roster -->
+    <section class="section" id="agency-roster-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Photos</h2>
+          <h2 class="section-title">
+            Roster
+            <span id="agency-roster-count" style="font-weight:400;color:var(--text-muted);margin-left:8px;font-size:12px;"></span>
+          </h2>
         </div>
-        <div id="person-gallery">
-          <!-- Rendered by person.js -->
+        <div id="agency-roster-grid">
+          <!-- Rendered by agency.js -->
         </div>
       </div>
     </section>
 
-    <!-- Person Works -->
-    <section class="section">
+    <!-- Works -->
+    <section class="section" id="agency-works-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">
             Works
-            <span id="person-works-count" style="font-weight:400;color:var(--text-muted);margin-left:8px;font-size:12px;"></span>
+            <span id="agency-works-count" style="font-weight:400;color:var(--text-muted);margin-left:8px;font-size:12px;"></span>
           </h2>
         </div>
-        <div id="person-works-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-          <!-- Rendered by person.js -->
+        <div id="agency-works-grid">
+          <!-- Rendered by agency.js -->
         </div>
       </div>
     </section>
 
   </main>
+
+  <!-- ========== WORK MODAL ========== -->
+  <div id="work-modal" aria-hidden="true">
+    <div id="modal-backdrop"></div>
+    <div class="modal-panel">
+      <div id="modal-img"></div>
+      <div class="modal-info" id="modal-info">
+        <button id="modal-close" aria-label="Close">✕</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ========== FOOTER ========== -->
   <footer id="footer">
@@ -107,6 +113,6 @@
   </footer>
 
   <script src="js/data.js"></script>
-  <script src="js/person.js"></script>
+  <script src="js/agency.js"></script>
 </body>
 </html>
