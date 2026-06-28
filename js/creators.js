@@ -5,8 +5,22 @@
 
 let shuffledPeople = [];
 
+const CREATORS_ORDER_KEY = "credge_creators_order";
+
 document.addEventListener("DOMContentLoaded", () => {
-  shuffledPeople = [...people].sort(() => Math.random() - 0.5);
+  const saved = sessionStorage.getItem(CREATORS_ORDER_KEY);
+
+  if (saved) {
+    const ids = JSON.parse(saved);
+    const idMap = new Map(people.map(p => [p.id, p]));
+    shuffledPeople = ids.map(id => idMap.get(id)).filter(Boolean);
+    const savedSet = new Set(ids);
+    people.filter(p => !savedSet.has(p.id)).forEach(p => shuffledPeople.push(p));
+  } else {
+    shuffledPeople = [...people].sort(() => Math.random() - 0.5);
+    sessionStorage.setItem(CREATORS_ORDER_KEY, JSON.stringify(shuffledPeople.map(p => p.id)));
+  }
+
   renderCreatorsGrid("all");
   initGenderFilter();
   initHeaderScroll();
