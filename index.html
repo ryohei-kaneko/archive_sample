@@ -147,19 +147,6 @@
       </div>
     </section>
 
-    <!-- ========== ROLE SECTION ========== -->
-    <section class="section" id="role-section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Browse by Role</h2>
-          <span class="t-caption">Click to filter works by credit role</span>
-        </div>
-        <div id="role-nav-grid" aria-label="役割ナビゲーション">
-          <!-- Rendered by JS — credit_role定義値をベースに描画 -->
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <!-- ========== FOOTER ========== -->
@@ -178,9 +165,20 @@
           <a href="#">Contact</a>
         </nav>
       </div>
-      <div class="footer-copy">© 2024 ARCHIVE JP. All rights reserved.</div>
+      <div class="footer-copy">© ARCHIVE JP. All rights reserved.</div>
     </div>
   </footer>
+
+  <!-- ========== WORK MODAL ========== -->
+  <div id="work-modal" aria-hidden="true">
+    <div id="modal-backdrop"></div>
+    <div class="modal-panel">
+      <div id="modal-img"></div>
+      <div class="modal-info" id="modal-info">
+        <button id="modal-close" aria-label="Close">✕</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ========== TOAST ========== -->
   <div id="toast" role="status" aria-live="polite"></div>

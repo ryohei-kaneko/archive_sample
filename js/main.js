@@ -35,46 +35,79 @@ function renderWorks() {
 }
 
 function renderCard(w) {
-  const creditGroups = groupCredits(w.credits).slice(0, 5);
-  const creditHTML = creditGroups.map(g => `
-    <div class="credit-row">
-      <span class="credit-role">${ROLE_LABEL[g.role] || g.role}</span>
-      <span class="credit-names">
-        ${g.people.map(n => buildCreditNameHTML(n, "")).join(" / ")}
-      </span>
-    </div>
-  `).join("");
-
-  const typeLabel = WORK_TYPES.find(t => t.id === w.type)?.label || w.type;
-  const typeColor = getWorkColor(w.type);
-  const tagHTML   = w.tags.slice(0, 3).map(t => `<span class="work-tag">${t}</span>`).join("");
+  const bg = w.image_url
+    ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
+    : `background: ${w.color};`;
 
   return `
-    <article class="work-card${w.featured ? " featured" : ""}" data-id="${w.id}">
-      <div class="card-image">
-        <div class="card-placeholder" style="${w.image_url
-          ? `background:url('${w.image_url}') center/cover no-repeat, ${w.color};`
-          : `background:${w.color};`}">
-          <div style="position:absolute;inset:0;background:linear-gradient(160deg,transparent 30%,rgba(0,0,0,0.55));"></div>
-          <div style="position:absolute;bottom:20px;left:20px;right:20px;">
-            <div style="font-size:9px;font-weight:700;letter-spacing:0.16em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:6px;">${w.brand || "ARCHIVE JP"}</div>
-            <div style="font-size:${w.featured ? "17px" : "13px"};font-weight:700;color:#fff;line-height:1.25;letter-spacing:-0.01em;">${w.title}</div>
-            <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:6px;">${w.season}</div>
-          </div>
+    <article class="work-card" data-id="${w.id}">
+      <div class="card-photo" style="${bg}">
+        <div class="card-overlay">
+          <div class="card-overlay-brand">${w.brand || ""}</div>
+          <div class="card-overlay-title">${w.title}</div>
         </div>
-        <span class="card-type-badge" style="--badge-color:${typeColor}">${typeLabel}</span>
-      </div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-brand">${w.brand || "—"}</span>
-          <span class="card-season">${w.season}</span>
-        </div>
-        <div class="card-title">${w.title}</div>
-        <div class="card-tags">${tagHTML}</div>
-        <div class="card-credits">${creditHTML}</div>
       </div>
     </article>
   `;
+}
+
+
+// ── Modal ──
+function openModal(workId) {
+  const w = works.find(x => x.id === workId);
+  if (!w) return;
+
+  const imgEl  = document.getElementById("modal-img");
+  const infoEl = document.getElementById("modal-info");
+
+  imgEl.style.cssText = w.image_url
+    ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
+    : `background: ${w.color};`;
+
+  const creditsHTML = groupCredits(w.credits).map(g => `
+    <div class="modal-credit-row">
+      <div class="modal-credit-role">${ROLE_LABEL[g.role] || g.role}</div>
+      <div class="modal-credit-names">
+        ${g.people.map(n => buildCreditNameHTML(n, "")).join(",  ")}
+      </div>
+    </div>
+  `).join("");
+
+  const tagsHTML = w.tags.map(t => `<span class="work-tag">${t}</span>`).join("");
+
+  infoEl.innerHTML = `
+    <button id="modal-close" aria-label="Close">✕</button>
+    <div class="modal-meta">
+      <div class="modal-brand">${w.brand || "—"}</div>
+      <h2 class="modal-title">${w.title}</h2>
+      <div class="modal-season">${w.season}</div>
+    </div>
+    ${tagsHTML ? `<div class="modal-tags">${tagsHTML}</div>` : ""}
+    <div class="modal-credits">${creditsHTML}</div>
+  `;
+
+  document.getElementById("modal-close").addEventListener("click", closeModal);
+
+  const modal = document.getElementById("work-modal");
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  const modal = document.getElementById("work-modal");
+  modal?.classList.remove("open");
+  modal?.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function initModal() {
+  document.getElementById("works-grid")?.addEventListener("click", e => {
+    const card = e.target.closest(".work-card");
+    if (card) openModal(card.dataset.id);
+  });
+  document.getElementById("modal-backdrop")?.addEventListener("click", closeModal);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 }
 
 
@@ -147,37 +180,6 @@ function renderBrands() {
   });
 }
 
-
-// ── Render: Role Nav ──
-function renderRoleNav() {
-  const grid = document.getElementById("role-nav-grid");
-  if (!grid) return;
-
-  grid.innerHTML = CREDIT_ROLES_NAV.map(r => `
-    <button class="role-nav-card" data-role="${r.id}">
-      <div class="role-nav-label">${r.label}</div>
-      <div class="role-nav-count">${r.count} people</div>
-    </button>
-  `).join("");
-
-  grid.querySelectorAll(".role-nav-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const role = card.dataset.role;
-      if (activeRole === role) {
-        activeRole = null;
-        card.classList.remove("active");
-      } else {
-        activeRole = role;
-        grid.querySelectorAll(".role-nav-card").forEach(c => c.classList.remove("active"));
-        card.classList.add("active");
-      }
-      activeType = "all";
-      renderFilters();
-      renderWorks();
-      document.getElementById("works-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  });
-}
 
 function clearRoleHighlight() {
   document.querySelectorAll(".role-nav-card").forEach(c => c.classList.remove("active"));
@@ -260,9 +262,9 @@ document.addEventListener("DOMContentLoaded", () => {
   renderWorks();
   renderPeople();
   renderBrands();
-  renderRoleNav();
   initSearch();
   initMobileMenu();
   initHeaderScroll();
+  initModal();
   setTimeout(animateCounters, 400);
 });
