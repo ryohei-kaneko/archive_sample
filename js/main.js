@@ -115,8 +115,9 @@ function renderPeople() {
   const grid = document.getElementById("people-grid");
   if (!grid) return;
 
-  const limit = window.innerWidth <= 520 ? 8 : people.length;
-  grid.innerHTML = people.slice(0, limit).map(p => {
+  const limit = window.innerWidth <= 520 ? 8 : 15;
+  const shuffled = [...people].sort(() => Math.random() - 0.5);
+  grid.innerHTML = shuffled.slice(0, limit).map(p => {
     const avatarInner = p.profile_image
       ? `<img src="${p.profile_image}" alt="${p.name}">`
       : p.name.slice(0, 1);
@@ -187,31 +188,93 @@ function clearRoleHighlight() {
 function initSearch() {
   const overlay  = document.getElementById("search-overlay");
   const input    = document.getElementById("search-input");
+  const results  = document.getElementById("search-results");
   const openBtn  = document.getElementById("btn-search-open");
   const closeBtn = document.getElementById("btn-search-close");
 
-  openBtn?.addEventListener("click",  () => { overlay?.classList.add("open"); setTimeout(() => input?.focus(), 50); });
-  closeBtn?.addEventListener("click", () => closeSearch());
-  overlay?.addEventListener("click",  e => { if (e.target === overlay) closeSearch(); });
+  function openSearch() {
+    overlay?.classList.add("open");
+    setTimeout(() => input?.focus(), 50);
+  }
+
+  function closeSearch() {
+    overlay?.classList.remove("open");
+    if (input) { input.value = ""; }
+    if (results) { results.innerHTML = ""; }
+  }
+
+  openBtn?.addEventListener("click", openSearch);
+  closeBtn?.addEventListener("click", closeSearch);
+  overlay?.addEventListener("click", e => { if (e.target === overlay) closeSearch(); });
 
   input?.addEventListener("input", () => {
-    searchQuery = input.value.toLowerCase().trim();
-    renderWorks();
+    const q = input.value.toLowerCase().trim();
+    if (!q) { results.innerHTML = ""; return; }
+    renderSearchResults(q, results);
   });
 
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") closeSearch();
     if ((e.metaKey || e.ctrlKey) && e.key === "k") {
       e.preventDefault();
-      overlay?.classList.add("open");
-      setTimeout(() => input?.focus(), 50);
+      openSearch();
     }
   });
+}
 
-  function closeSearch() {
-    overlay?.classList.remove("open");
-    if (input) { searchQuery = ""; input.value = ""; renderWorks(); }
+function renderSearchResults(q, container) {
+  const matchedPeople = people.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.name_en.toLowerCase().includes(q) ||
+    (p.name_kana && p.name_kana.toLowerCase().includes(q))
+  );
+
+  const matchedWorks = works.filter(w =>
+    w.title.toLowerCase().includes(q) ||
+    (w.brand && w.brand.toLowerCase().includes(q)) ||
+    (w.season && w.season.toLowerCase().includes(q)) ||
+    w.credits.some(c => {
+      const person = people.find(p => p.name === c.person);
+      return c.person.toLowerCase().includes(q) ||
+             (person && person.name_en.toLowerCase().includes(q));
+    })
+  );
+
+  let html = "";
+
+  if (matchedPeople.length > 0) {
+    html += `<div class="search-group-label">Creators</div>`;
+    html += matchedPeople.map(p => `
+      <a class="search-result-item" href="person.html?id=${p.id}">
+        <div class="search-result-name">${p.name_en}</div>
+        <div class="search-result-sub">${p.name} · ${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
+      </a>
+    `).join("");
   }
+
+  if (matchedWorks.length > 0) {
+    html += `<div class="search-group-label">Works</div>`;
+    html += matchedWorks.slice(0, 6).map(w => `
+      <a class="search-result-item search-result-work" data-id="${w.id}" href="#">
+        <div class="search-result-name">${w.title}</div>
+        <div class="search-result-sub">${w.brand || "—"} · ${w.season}</div>
+      </a>
+    `).join("");
+  }
+
+  if (!html) {
+    html = `<div class="search-empty">No results found.</div>`;
+  }
+
+  container.innerHTML = html;
+
+  container.querySelectorAll(".search-result-work").forEach(el => {
+    el.addEventListener("click", e => {
+      e.preventDefault();
+      document.getElementById("search-overlay")?.classList.remove("open");
+      openModal(el.dataset.id);
+    });
+  });
 }
 
 

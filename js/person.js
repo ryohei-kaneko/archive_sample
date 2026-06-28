@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderPersonHeader(person, agency, personWorks.length);
   renderPersonWorks(personWorks, person.name);
+  initCreditsModal();
   initHeaderScroll();
   initMobileMenu();
 });
@@ -68,7 +69,7 @@ function renderPersonHeader(person, agency, workCount) {
       <div class="person-profile-info">
         <div class="person-profile-role">${ROLE_LABEL[person.primary_role] || person.primary_role}</div>
         <h1 class="person-profile-name">${person.name_en}</h1>
-        <div class="person-profile-name-sub">${person.name}</div>
+        ${person.name !== person.name_en ? `<div class="person-profile-name-sub">${person.name}</div>` : ""}
         ${linksHTML}
         ${renderMeasurements(person)}
         ${agencyHTML}
@@ -109,20 +110,18 @@ function renderPersonWorks(personWorks, personName) {
   if (!grid) return;
 
   grid.className = "person-works-list";
-  grid.innerHTML = personWorks.length === 0
-    ? `<div class="no-results">No works found.</div>`
-    : personWorks.map(w => renderPersonWorkRow(w, personName)).join("");
+  if (personWorks.length === 0) {
+    grid.innerHTML = `<div class="no-results">No works found.</div>`;
+    return;
+  }
+  grid.innerHTML = personWorks.map(w => renderPersonWorkRow(w)).join("");
+  grid.querySelectorAll(".work-row").forEach(el => {
+    el.addEventListener("click", () => openCreditsModal(el.dataset.id));
+  });
 }
 
 
-function renderPersonWorkRow(w, personName) {
-  const myRoles = w.credits
-    .filter(c => c.person === personName)
-    .map(c => ROLE_LABEL[c.credit_role] || c.credit_role)
-    .join(", ");
-
-  const typeLabel = WORK_TYPES.find(t => t.id === w.type)?.label || w.type;
-
+function renderPersonWorkRow(w) {
   const thumb = w.image_url
     ? `<img src="${w.image_url}" alt="${w.title}" class="work-row-thumb">`
     : `<div class="work-row-thumb work-row-thumb--color" style="background:${w.color};"></div>`;
@@ -130,17 +129,43 @@ function renderPersonWorkRow(w, personName) {
   return `
     <article class="work-row" data-id="${w.id}">
       ${thumb}
-      <div class="work-row-info">
-        <div class="work-row-brand">${w.brand || "—"}</div>
-        <div class="work-row-title">${w.title}</div>
-      </div>
-      <div class="work-row-meta">
-        <span class="work-row-season">${w.season}</span>
-        <span class="work-row-type">${typeLabel}</span>
-        <span class="work-row-role">${myRoles}</span>
-      </div>
+      <div class="work-row-brand">${w.brand || "—"}</div>
+      <div class="work-row-title">${w.title}</div>
     </article>
   `;
+}
+
+
+function openCreditsModal(workId) {
+  const w = works.find(x => x.id === workId);
+  if (!w) return;
+
+  const creditsHTML = groupCredits(w.credits).map(g => `
+    <div class="cm-credit-row">
+      <div class="cm-credit-role">${ROLE_LABEL[g.role] || g.role}</div>
+      <div class="cm-credit-names">${g.people.map(n => buildCreditNameHTML(n, "")).join(", ")}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("cm-title").textContent = w.title;
+  document.getElementById("cm-brand").textContent = w.brand || "—";
+  document.getElementById("cm-season").textContent = w.season;
+  document.getElementById("cm-credits").innerHTML = creditsHTML;
+
+  const modal = document.getElementById("credits-modal");
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeCreditsModal() {
+  document.getElementById("credits-modal")?.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function initCreditsModal() {
+  document.getElementById("cm-close")?.addEventListener("click", closeCreditsModal);
+  document.getElementById("cm-backdrop")?.addEventListener("click", closeCreditsModal);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeCreditsModal(); });
 }
 
 

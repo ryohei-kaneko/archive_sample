@@ -3,19 +3,36 @@
    Requires: data.js
    =========================== */
 
+let shuffledPeople = [];
+
 document.addEventListener("DOMContentLoaded", () => {
-  renderCreatorsGrid();
+  shuffledPeople = [...people].sort(() => Math.random() - 0.5);
+  renderCreatorsGrid("all");
+  initGenderFilter();
   initHeaderScroll();
   initMobileMenu();
 });
 
 
-function renderCreatorsGrid() {
+function initGenderFilter() {
+  document.querySelectorAll(".creators-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".creators-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderCreatorsGrid(btn.dataset.gender);
+    });
+  });
+}
+
+
+function renderCreatorsGrid(gender) {
   const grid = document.getElementById("creators-grid");
   if (!grid) return;
 
+  const filtered = gender === "all" ? shuffledPeople : shuffledPeople.filter(p => p.gender === gender);
+
   grid.className = "creators-grid";
-  grid.innerHTML = people.map(p => {
+  grid.innerHTML = filtered.map(p => {
     const bg = p.profile_image
       ? `background: url('${p.profile_image}') center/cover no-repeat;`
       : `background: ${p.color};`;
@@ -28,7 +45,7 @@ function renderCreatorsGrid() {
         <div class="creator-card-img" style="${bg}"></div>
         <div class="creator-card-overlay">
           <div class="creator-card-name">${p.name_en}</div>
-          <div class="creator-card-sub">${p.name}</div>
+          ${p.name !== p.name_en ? `<div class="creator-card-sub">${p.name}</div>` : ""}
           <div class="creator-card-role">${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
           ${agencyName ? `<div class="creator-card-agency">${agencyName}</div>` : ""}
         </div>
