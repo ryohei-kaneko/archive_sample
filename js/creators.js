@@ -52,7 +52,11 @@ function initMobileMenu() {
   if (!toggle || !menu) return;
   toggle.addEventListener("click", () => {
     const open = menu.classList.toggle("open");
+    toggle.classList.toggle("open", open);
     toggle.setAttribute("aria-expanded", open);
   });
-  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    menu.classList.remove("open");
+    toggle.classList.remove("open");
+  }));
 }

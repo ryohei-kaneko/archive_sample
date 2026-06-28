@@ -39,18 +39,23 @@ function renderAgencyHeader(agency, rosterCount, worksCount) {
 
   el.innerHTML = `
     <div class="agency-profile-inner">
-      <div class="agency-avatar">${agency.name.slice(0, 1)}</div>
       <div class="agency-profile-info">
         <div class="person-profile-role">${typeLabel}</div>
         <h1 class="person-profile-name" style="font-size:clamp(20px,4vw,32px);">${agency.name}</h1>
-        <div class="agency-profile-meta">
-          <span>${rosterCount} talents</span>
-          <span>·</span>
-          <span>${worksCount} works</span>
+        <div class="agency-links">
+          ${agency.website && agency.website !== "#"
+            ? `<a class="agency-website-link" href="${agency.website}" target="_blank" rel="noopener">Website</a>`
+            : ""}
+          ${agency.instagram_url
+            ? `<a class="agency-insta-link" href="${agency.instagram_url}" target="_blank" rel="noopener" aria-label="Instagram">
+                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                   <circle cx="12" cy="12" r="4"/>
+                   <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+                 </svg>
+               </a>`
+            : ""}
         </div>
-        ${agency.website && agency.website !== "#"
-          ? `<a class="btn-booking" href="${agency.website}" target="_blank" rel="noopener">Official Website →</a>`
-          : ""}
       </div>
     </div>
   `;
@@ -193,7 +198,11 @@ function initMobileMenu() {
   if (!toggle || !menu) return;
   toggle.addEventListener("click", () => {
     const open = menu.classList.toggle("open");
+    toggle.classList.toggle("open", open);
     toggle.setAttribute("aria-expanded", open);
   });
-  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    menu.classList.remove("open");
+    toggle.classList.remove("open");
+  }));
 }

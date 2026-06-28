@@ -26,9 +26,10 @@ function renderWorks() {
     return matchType && matchRole && matchQ;
   });
 
+  const limit = window.innerWidth <= 520 ? 8 : 9;
   grid.innerHTML = filtered.length === 0
     ? `<div class="no-results">No works found.</div>`
-    : filtered.slice(0, 9).map(renderCard).join("");
+    : filtered.slice(0, limit).map(renderCard).join("");
 }
 
 function renderCard(w) {
@@ -114,7 +115,8 @@ function renderPeople() {
   const grid = document.getElementById("people-grid");
   if (!grid) return;
 
-  grid.innerHTML = people.map(p => {
+  const limit = window.innerWidth <= 520 ? 8 : people.length;
+  grid.innerHTML = people.slice(0, limit).map(p => {
     const avatarInner = p.profile_image
       ? `<img src="${p.profile_image}" alt="${p.name}">`
       : p.name.slice(0, 1);
@@ -220,9 +222,13 @@ function initMobileMenu() {
   if (!toggle || !menu) return;
   toggle.addEventListener("click", () => {
     const open = menu.classList.toggle("open");
+    toggle.classList.toggle("open", open);
     toggle.setAttribute("aria-expanded", open);
   });
-  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    menu.classList.remove("open");
+    toggle.classList.remove("open");
+  }));
 }
 
 

@@ -20,11 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const personWorks  = works.filter(w => w.credits.some(c => c.person === person.name));
 
   renderPersonHeader(person, agency, personWorks.length);
-  renderPortfolioGallery(person);
   renderPersonWorks(personWorks, person.name);
   initHeaderScroll();
   initMobileMenu();
-  initLightbox();
 });
 
 
@@ -105,69 +103,6 @@ function renderMeasurements(person) {
 }
 
 
-function renderPortfolioGallery(person) {
-  if (!person.portfolio_images || person.portfolio_images.length === 0) return;
-  const section = document.getElementById("person-gallery-section");
-  const grid    = document.getElementById("person-gallery");
-  if (!section || !grid) return;
-
-  section.style.display = "";
-  const visible = person.portfolio_images.slice(0, 4);
-  grid.className = "person-gallery-strip";
-  grid.innerHTML = visible.map((url, i) => `
-    <div class="gallery-item" data-index="${i}">
-      <img src="${url}" alt="Photo ${i + 1}" loading="lazy">
-    </div>
-  `).join("");
-
-  grid.querySelectorAll(".gallery-item").forEach(item => {
-    item.addEventListener("click", () => openLightbox(person.portfolio_images, parseInt(item.dataset.index)));
-  });
-}
-
-
-let _lbImages = [];
-let _lbIndex  = 0;
-
-function openLightbox(images, index) {
-  _lbImages = images;
-  _lbIndex  = index;
-  const lb = document.getElementById("lightbox");
-  lb.querySelector("#lb-img").src = images[index];
-  lb.style.display = "flex";
-  document.body.style.overflow = "hidden";
-}
-
-function closeLightbox() {
-  document.getElementById("lightbox").style.display = "none";
-  document.body.style.overflow = "";
-}
-
-function initLightbox() {
-  if (document.getElementById("lightbox")) return;
-
-  const lb = document.createElement("div");
-  lb.id = "lightbox";
-  lb.style.cssText = "display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;";
-  lb.innerHTML = `
-    <button onclick="closeLightbox()" style="position:absolute;top:20px;right:24px;color:#fff;font-size:28px;background:none;border:none;cursor:pointer;opacity:0.7;">✕</button>
-    <button onclick="_lbIndex=(_lbIndex-1+_lbImages.length)%_lbImages.length;document.getElementById('lb-img').src=_lbImages[_lbIndex]"
-            style="position:absolute;left:20px;color:#fff;font-size:36px;background:none;border:none;cursor:pointer;opacity:0.7;">‹</button>
-    <img id="lb-img" src="" style="max-width:90vw;max-height:90vh;object-fit:contain;display:block;">
-    <button onclick="_lbIndex=(_lbIndex+1)%_lbImages.length;document.getElementById('lb-img').src=_lbImages[_lbIndex]"
-            style="position:absolute;right:20px;color:#fff;font-size:36px;background:none;border:none;cursor:pointer;opacity:0.7;">›</button>
-  `;
-  lb.addEventListener("click", e => { if (e.target === lb) closeLightbox(); });
-  document.body.appendChild(lb);
-
-  document.addEventListener("keydown", e => {
-    if (lb.style.display === "none") return;
-    if (e.key === "Escape") closeLightbox();
-    if (e.key === "ArrowLeft")  { _lbIndex = (_lbIndex - 1 + _lbImages.length) % _lbImages.length; document.getElementById("lb-img").src = _lbImages[_lbIndex]; }
-    if (e.key === "ArrowRight") { _lbIndex = (_lbIndex + 1) % _lbImages.length; document.getElementById("lb-img").src = _lbImages[_lbIndex]; }
-  });
-}
-
 
 function renderPersonWorks(personWorks, personName) {
   const grid = document.getElementById("person-works-grid");
@@ -223,7 +158,11 @@ function initMobileMenu() {
   if (!toggle || !menu) return;
   toggle.addEventListener("click", () => {
     const open = menu.classList.toggle("open");
+    toggle.classList.toggle("open", open);
     toggle.setAttribute("aria-expanded", open);
   });
-  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    menu.classList.remove("open");
+    toggle.classList.remove("open");
+  }));
 }

@@ -52,7 +52,7 @@ const agencies = [
   { id: "a4", name: "フロムファースト",  type: "creative", website: "#" },
   { id: "a5", name: "エルシーエー",      type: "creative", website: "#" },
   { id: "a6",   name: "テンカラット",      type: "model",    website: "#" },
-  { id: "a-n8", name: "NUMBER EIGHT MODELS", type: "model", website: "https://numbereight-models.jp/" },
+  { id: "a-n8", name: "NUMBER EIGHT", type: "model", website: "https://numbereight-models.jp/", instagram_url: "https://www.instagram.com/numbereight_models/" },
 ];
 
 const brands = [
