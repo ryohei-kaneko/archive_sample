@@ -1,0 +1,58 @@
+/* ===========================
+   CREDGE — Creators Page
+   Requires: data.js
+   =========================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderCreatorsGrid();
+  initHeaderScroll();
+  initMobileMenu();
+});
+
+
+function renderCreatorsGrid() {
+  const grid = document.getElementById("creators-grid");
+  if (!grid) return;
+
+  grid.className = "creators-grid";
+  grid.innerHTML = people.map(p => {
+    const bg = p.profile_image
+      ? `background: url('${p.profile_image}') center/cover no-repeat;`
+      : `background: ${p.color};`;
+
+    const agency = p.agency_id ? agencies.find(a => a.id === p.agency_id) : null;
+    const agencyName = agency ? agency.name : "";
+
+    return `
+      <a class="creator-card" href="person.html?id=${p.id}">
+        <div class="creator-card-img" style="${bg}"></div>
+        <div class="creator-card-overlay">
+          <div class="creator-card-name">${p.name_en}</div>
+          <div class="creator-card-sub">${p.name}</div>
+          <div class="creator-card-role">${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
+          ${agencyName ? `<div class="creator-card-agency">${agencyName}</div>` : ""}
+        </div>
+      </a>
+    `;
+  }).join("");
+}
+
+
+function initHeaderScroll() {
+  const header = document.getElementById("header");
+  if (!header) return;
+  window.addEventListener("scroll", () => {
+    header.style.boxShadow = window.scrollY > 8 ? "0 1px 0 rgba(0,0,0,0.06)" : "none";
+  }, { passive: true });
+}
+
+function initMobileMenu() {
+  const toggle = document.getElementById("menu-toggle");
+  const menu   = document.getElementById("mobile-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", () => {
+    const open = menu.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", open);
+  });
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => menu.classList.remove("open")));
+}
