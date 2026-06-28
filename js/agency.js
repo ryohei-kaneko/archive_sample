@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  document.title = `${agency.name} — ARCHIVE`;
+  document.title = `${agency.name} — CREDGE`;
 
   const roster      = people.filter(p => p.agency_id === id);
   const rosterNames = new Set(roster.map(p => p.name));

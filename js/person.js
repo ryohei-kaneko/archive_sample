@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  document.title = `${person.name} — ARCHIVE`;
+  document.title = `${person.name_en} — CREDGE`;
 
   const agency       = person.agency_id ? agencies.find(a => a.id === person.agency_id) : null;
   const personWorks  = works.filter(w => w.credits.some(c => c.person === person.name));
@@ -39,37 +39,68 @@ function renderPersonHeader(person, agency, workCount) {
          ${person.is_verified ? `<div class="verified-dot"></div>` : ""}
        </div>`;
 
-  const contactHTML = agency
-    ? `
-      <a class="person-agency-link" href="agency.html?id=${agency.id}">
-        <span class="person-agency-label">所属事務所</span>
-        ${agency.name}
-      </a>
-      ${agency.website && agency.website !== "#"
-        ? `<a class="btn-booking" href="${agency.website}" target="_blank" rel="noopener">Book via Agency →</a>`
-        : ""}
+  const linksHTML = `
+    <div class="person-links">
       ${person.instagram_url
-        ? `<a class="person-insta-link person-insta-secondary" href="${person.instagram_url}" target="_blank" rel="noopener">Instagram (personal)</a>`
+        ? `<a class="person-link" href="${person.instagram_url}" target="_blank" rel="noopener">Instagram</a>`
         : ""}
+      ${person.composite_url
+        ? `<a class="person-link" href="${person.composite_url}" target="_blank" rel="noopener">Composite</a>`
+        : ""}
+    </div>
+  `;
+
+  const agencyHTML = agency
+    ? `
+      <div class="person-contact-area">
+        <a class="person-agency-link" href="agency.html?id=${agency.id}">
+          <span class="person-agency-label">Model Agency</span>
+          ${agency.name}
+        </a>
+        ${agency.website && agency.website !== "#"
+          ? `<a class="btn-booking" href="${agency.website}" target="_blank" rel="noopener">Book via Agency →</a>`
+          : ""}
+      </div>
     `
-    : `${person.instagram_url
-        ? `<a class="person-insta-link" href="${person.instagram_url}" target="_blank" rel="noopener">Instagram →</a>`
-        : ""}`;
+    : "";
 
   el.innerHTML = `
     <div class="person-profile-inner">
       ${photoHTML}
       <div class="person-profile-info">
         <div class="person-profile-role">${ROLE_LABEL[person.primary_role] || person.primary_role}</div>
-        <h1 class="person-profile-name">${person.name}</h1>
-        <div class="person-profile-name-en">${person.name_en}</div>
-        <div class="person-profile-tags">
-          ${person.tags.map(t => `<span class="ptag">${t}</span>`).join("")}
-        </div>
-        <div class="person-profile-stats"><strong>${workCount}</strong> works</div>
-        <div class="person-contact-area">${contactHTML}</div>
+        <h1 class="person-profile-name">${person.name_en}</h1>
+        <div class="person-profile-name-sub">${person.name}</div>
+        ${linksHTML}
+        ${renderMeasurements(person)}
+        ${agencyHTML}
       </div>
     </div>
+  `;
+}
+
+
+function renderMeasurements(person) {
+  const m = person.measurements;
+  if (!m) return "";
+
+  const items = [
+    { label: "Height", value: m.height ? `${m.height} cm` : null },
+    { label: "Bust",   value: m.bust   ? `${m.bust} cm`   : null },
+    { label: "Waist",  value: m.waist  ? `${m.waist} cm`  : null },
+    { label: "Hip",    value: m.hip    ? `${m.hip} cm`    : null },
+    { label: "Shoe",   value: m.shoe   ? `${m.shoe} cm`   : null },
+  ].filter(i => i.value);
+
+  return `
+    <dl class="person-measurements">
+      ${items.map(i => `
+        <div class="person-measurements-item">
+          <dt>${i.label}</dt>
+          <dd>${i.value}</dd>
+        </div>
+      `).join("")}
+    </dl>
   `;
 }
 
@@ -81,14 +112,11 @@ function renderPortfolioGallery(person) {
   if (!section || !grid) return;
 
   section.style.display = "";
-  grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;";
-  grid.innerHTML = person.portfolio_images.map((url, i) => `
-    <div class="gallery-item" data-index="${i}" style="cursor:pointer;overflow:hidden;aspect-ratio:3/4;background:#111;">
-      <img src="${url}" alt="Photo ${i + 1}"
-           style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease;"
-           loading="lazy"
-           onmouseover="this.style.transform='scale(1.04)'"
-           onmouseout="this.style.transform='scale(1)'">
+  const visible = person.portfolio_images.slice(0, 4);
+  grid.className = "person-gallery-strip";
+  grid.innerHTML = visible.map((url, i) => `
+    <div class="gallery-item" data-index="${i}">
+      <img src="${url}" alt="Photo ${i + 1}" loading="lazy">
     </div>
   `).join("");
 
@@ -142,62 +170,39 @@ function initLightbox() {
 
 
 function renderPersonWorks(personWorks, personName) {
-  const countEl = document.getElementById("person-works-count");
-  const grid    = document.getElementById("person-works-grid");
+  const grid = document.getElementById("person-works-grid");
   if (!grid) return;
 
-  if (countEl) countEl.textContent = personWorks.length;
-
+  grid.className = "person-works-list";
   grid.innerHTML = personWorks.length === 0
     ? `<div class="no-results">No works found.</div>`
-    : personWorks.map(w => renderPersonCard(w, personName)).join("");
+    : personWorks.map(w => renderPersonWorkRow(w, personName)).join("");
 }
 
 
-function renderPersonCard(w, personName) {
+function renderPersonWorkRow(w, personName) {
   const myRoles = w.credits
     .filter(c => c.person === personName)
     .map(c => ROLE_LABEL[c.credit_role] || c.credit_role)
     .join(", ");
 
-  const creditGroups = groupCredits(w.credits).slice(0, 4);
-  const creditHTML   = creditGroups.map(g => `
-    <div class="credit-row">
-      <span class="credit-role">${ROLE_LABEL[g.role] || g.role}</span>
-      <span class="credit-names">
-        ${g.people.map(n => buildCreditNameHTML(n, "")).join(" / ")}
-      </span>
-    </div>
-  `).join("");
-
   const typeLabel = WORK_TYPES.find(t => t.id === w.type)?.label || w.type;
-  const typeColor = getWorkColor(w.type);
-  const tagHTML   = w.tags.slice(0, 2).map(t => `<span class="work-tag">${t}</span>`).join("");
+
+  const thumb = w.image_url
+    ? `<img src="${w.image_url}" alt="${w.title}" class="work-row-thumb">`
+    : `<div class="work-row-thumb work-row-thumb--color" style="background:${w.color};"></div>`;
 
   return `
-    <article class="work-card" data-id="${w.id}">
-      <div class="card-image">
-        <div class="card-placeholder" style="${w.image_url
-          ? `background:url('${w.image_url}') center/cover no-repeat, ${w.color};`
-          : `background:${w.color};`}">
-          <div style="position:absolute;inset:0;background:linear-gradient(160deg,transparent 30%,rgba(0,0,0,0.55));"></div>
-          <div style="position:absolute;bottom:20px;left:20px;right:20px;">
-            <div style="font-size:9px;font-weight:700;letter-spacing:0.16em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:6px;">${w.brand || "ARCHIVE JP"}</div>
-            <div style="font-size:13px;font-weight:700;color:#fff;line-height:1.25;letter-spacing:-0.01em;">${w.title}</div>
-            <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:6px;">${w.season}</div>
-          </div>
-        </div>
-        <span class="card-type-badge" style="--badge-color:${typeColor}">${typeLabel}</span>
-        <span class="card-myrole-badge">${myRoles}</span>
+    <article class="work-row" data-id="${w.id}">
+      ${thumb}
+      <div class="work-row-info">
+        <div class="work-row-brand">${w.brand || "—"}</div>
+        <div class="work-row-title">${w.title}</div>
       </div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-brand">${w.brand || "—"}</span>
-          <span class="card-season">${w.season}</span>
-        </div>
-        <div class="card-title">${w.title}</div>
-        <div class="card-tags">${tagHTML}</div>
-        <div class="card-credits">${creditHTML}</div>
+      <div class="work-row-meta">
+        <span class="work-row-season">${w.season}</span>
+        <span class="work-row-type">${typeLabel}</span>
+        <span class="work-row-role">${myRoles}</span>
       </div>
     </article>
   `;

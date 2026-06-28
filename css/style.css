@@ -523,7 +523,7 @@ ul, ol { list-style: none; }
    =========================== */
 #people-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 48px;
 }
 
@@ -909,18 +909,18 @@ a.person-card {
 .back-link:hover { color: var(--text); }
 
 .person-profile-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: 28px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: start;
+  max-width: 720px;
 }
 
 .person-profile-photo {
-  width: 140px;
-  height: 200px;
+  width: 100%;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   object-position: top center;
-  border-radius: var(--radius);
-  flex-shrink: 0;
   display: block;
 }
 
@@ -960,15 +960,16 @@ a.person-card {
 }
 
 .person-profile-name {
-  font-size: clamp(22px, 4vw, 38px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  margin-bottom: 6px;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin-bottom: 4px;
 }
 
-.person-profile-name-en {
-  font-size: 13px;
+.person-profile-name-sub {
+  font-size: 12px;
+  font-weight: 400;
   color: var(--text-muted);
   margin-bottom: 12px;
 }
@@ -1011,6 +1012,23 @@ a.person-card {
   margin-top: 4px;
 }
 .btn-booking:hover { opacity: 0.75; }
+
+.btn-composite {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--text);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: opacity var(--ease);
+  margin-top: 4px;
+}
+.btn-composite:hover { opacity: 0.6; }
 
 .person-insta-secondary {
   font-size: 10px;
@@ -1121,6 +1139,145 @@ a.agency-row:hover { opacity: 0.65; }
   font-weight: 600;
 }
 
+/* ── Portfolio Gallery Strip ── */
+.person-gallery-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.person-gallery-strip .gallery-item {
+  cursor: pointer;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+}
+.person-gallery-strip .gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s;
+}
+.person-gallery-strip .gallery-item:hover img {
+  opacity: 0.85;
+}
+.gallery-more {
+  aspect-ratio: 2 / 3;
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+.gallery-more:hover { color: var(--text); border-color: var(--text); }
+
+/* ── Person Works List ── */
+.person-works-list {
+  display: flex;
+  flex-direction: column;
+}
+.work-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.work-row:first-child { border-top: 1px solid var(--border); }
+.work-row-thumb {
+  width: 48px;
+  height: 64px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+.work-row-thumb--color {
+  width: 48px;
+  height: 64px;
+  flex-shrink: 0;
+}
+.work-row-brand {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.work-row-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.work-row-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.work-row-season {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.work-row-type {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.work-row-role {
+  font-size: 11px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.person-links {
+  display: flex;
+  gap: 16px;
+  margin: 10px 0 16px;
+}
+.person-link {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: opacity var(--ease);
+}
+.person-link:hover { opacity: 0.5; }
+
+.person-measurements {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 12px 0 16px;
+}
+.person-measurements-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.person-measurements-item dt {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.person-measurements-item dd {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
 .card-myrole-badge {
   position: absolute;
   bottom: 12px;
@@ -1137,11 +1294,13 @@ a.agency-row:hover { opacity: 0.65; }
 
 @media (max-width: 800px) {
   #person-works-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
-  .person-profile-inner { gap: 18px; }
+  .person-profile-inner { grid-template-columns: 180px 1fr; gap: 28px; }
   .person-avatar-xl { width: 56px; height: 56px; font-size: 18px; }
 }
 @media (max-width: 520px) {
   #person-works-grid { grid-template-columns: 1fr !important; }
+  .person-profile-inner { grid-template-columns: 1fr; }
+  .person-gallery-strip { grid-template-columns: repeat(2, 1fr); }
 }
 
 

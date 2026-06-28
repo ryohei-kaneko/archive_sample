@@ -28,7 +28,7 @@ function renderWorks() {
 
   grid.innerHTML = filtered.length === 0
     ? `<div class="no-results">No works found.</div>`
-    : filtered.map(renderCard).join("");
+    : filtered.slice(0, 9).map(renderCard).join("");
 }
 
 function renderCard(w) {
@@ -108,28 +108,6 @@ function initModal() {
 }
 
 
-// ── Render: Filter Tabs ──
-function renderFilters() {
-  const bar = document.getElementById("filter-tabs");
-  if (!bar) return;
-
-  bar.innerHTML = WORK_TYPES.map(t => `
-    <button class="filter-btn${t.id === activeType ? " active" : ""}" data-type="${t.id}">
-      ${t.label}
-    </button>
-  `).join("");
-
-  bar.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      activeType = btn.dataset.type;
-      activeRole = null;
-      renderFilters();
-      renderWorks();
-      clearRoleHighlight();
-    });
-  });
-}
-
 
 // ── Render: People Grid ──
 function renderPeople() {
@@ -188,7 +166,6 @@ function renderAgencies() {
     const typeLabel = ag.type === "model" ? "Model Agency" : "Creative Agency";
     return `
       <a class="agency-row" href="agency.html?id=${ag.id}">
-        <div class="agency-row-avatar">${ag.name.slice(0, 1)}</div>
         <div class="agency-row-info">
           <div class="agency-row-name">${ag.name}</div>
           <div class="agency-row-sub">${typeLabel}</div>
@@ -261,7 +238,6 @@ function initHeaderScroll() {
 
 // ── Init ──
 document.addEventListener("DOMContentLoaded", () => {
-  renderFilters();
   renderWorks();
   renderPeople();
   renderBrands();
