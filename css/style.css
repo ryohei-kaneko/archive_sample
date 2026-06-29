@@ -1158,7 +1158,7 @@ a.person-card {
 /* Homepage agencies index grid */
 .agency-index-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 48px;
 }
 
@@ -1209,7 +1209,7 @@ a.agency-row:hover { opacity: 0.65; }
 /* Agency detail page roster */
 .agency-roster-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 48px;
 }
 
@@ -1492,7 +1492,8 @@ a.agency-row:hover { opacity: 0.65; }
 .creators-filter-btn:hover { color: var(--text); border-color: var(--text); }
 .creators-filter-btn.active { background: var(--text); border-color: var(--text); color: var(--white); }
 
-#gender-filter .creators-filter-btn {
+#gender-filter .creators-filter-btn,
+#roster-division-filter .creators-filter-btn {
   border: none;
   padding: 3px 10px;
   font-size: 10.5px;
@@ -1500,8 +1501,22 @@ a.agency-row:hover { opacity: 0.65; }
   color: var(--text-muted);
   border-bottom: 1px solid transparent;
 }
-#gender-filter .creators-filter-btn:hover { background: none; border-color: transparent; border-bottom-color: var(--text-muted); color: var(--text); }
-#gender-filter .creators-filter-btn.active { background: none; border-color: transparent; border-bottom-color: var(--text); color: var(--text); font-weight: 500; }
+#gender-filter .creators-filter-btn:hover,
+#roster-division-filter .creators-filter-btn:hover { background: none; border-color: transparent; border-bottom-color: var(--text-muted); color: var(--text); }
+#gender-filter .creators-filter-btn.active,
+#roster-division-filter .creators-filter-btn.active { background: none; border-color: transparent; border-bottom-color: var(--text); color: var(--text); font-weight: 500; }
+
+#nationality-filter .creators-filter-btn {
+  border: none;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-muted);
+  opacity: 0.5;
+  letter-spacing: 0.04em;
+}
+#nationality-filter .creators-filter-btn:hover { background: none; opacity: 0.8; color: var(--text); }
+#nationality-filter .creators-filter-btn.active { background: none; opacity: 1; color: var(--text); font-weight: 500; }
 
 .creators-grid {
   display: grid;
@@ -1521,6 +1536,13 @@ a.agency-row:hover { opacity: 0.65; }
   width: 100%;
   height: 100%;
   transition: transform 0.4s ease;
+  overflow: hidden;
+}
+.creator-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .creator-card:hover .creator-card-img {

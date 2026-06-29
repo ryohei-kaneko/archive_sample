@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Creators — CREDGE</title>
+  <title>Agencies — CREDGE</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,9 @@
       <a href="index.html" class="logo">CREDGE</a>
       <nav class="main-nav" aria-label="Main navigation">
         <a href="index.html">Works</a>
-        <a href="creators.html" class="active">Creators</a>
+        <a href="creators.html">Creators</a>
         <a href="index.html#brands-section">Brands</a>
-        <a href="index.html#agencies-section">Agencies</a>
+        <a href="agencies.html" class="active">Agencies</a>
       </nav>
       <div class="header-actions">
         <button class="menu-toggle" id="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
@@ -34,7 +34,7 @@
     <a href="index.html">Works</a>
     <a href="creators.html">Creators</a>
     <a href="index.html#brands-section">Brands</a>
-    <a href="index.html#agencies-section">Agencies</a>
+    <a href="agencies.html">Agencies</a>
   </nav>
 
   <!-- ========== MAIN ========== -->
@@ -42,33 +42,9 @@
     <section class="section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Creators</h2>
+          <h2 class="section-title">Agencies</h2>
         </div>
-        <div class="creators-filters">
-          <div class="creators-filter" id="role-filter">
-            <button class="creators-filter-btn active" data-role="all">All</button>
-            <button class="creators-filter-btn" data-role="model">Models</button>
-            <button class="creators-filter-btn" data-role="photographer">Photographers</button>
-            <button class="creators-filter-btn" data-role="stylist">Stylists</button>
-            <button class="creators-filter-btn" data-role="makeup">Makeup Artists</button>
-            <button class="creators-filter-btn" data-role="hair">Hair Stylists</button>
-            <button class="creators-filter-btn" data-role="casting">Casting Directors</button>
-            <button class="creators-filter-btn" data-role="set_designer">Set Designers</button>
-            <button class="creators-filter-btn" data-role="art_director">Art Directors</button>
-          </div>
-          <div class="creators-filter" id="gender-filter">
-            <button class="creators-filter-btn active" data-gender="all">All</button>
-            <button class="creators-filter-btn" data-gender="m">Men</button>
-            <button class="creators-filter-btn" data-gender="f">Women</button>
-            <button class="creators-filter-btn" data-gender="nb">Non-Binary</button>
-          </div>
-          <div class="creators-filter" id="nationality-filter">
-            <button class="creators-filter-btn active" data-nationality="all">All</button>
-            <button class="creators-filter-btn" data-nationality="asian">Asian</button>
-            <button class="creators-filter-btn" data-nationality="international">Mix / International</button>
-          </div>
-        </div>
-        <div id="creators-grid">
+        <div id="agencies-grid" aria-label="事務所一覧">
           <!-- Rendered by JS -->
         </div>
       </div>
@@ -95,6 +71,6 @@
   </footer>
 
   <script src="js/data.js"></script>
-  <script src="js/creators.js"></script>
+  <script src="js/agencies.js"></script>
 </body>
 </html>

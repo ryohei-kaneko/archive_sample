@@ -4,8 +4,9 @@
    =========================== */
 
 let shuffledPeople = [];
-let activeRole   = "all";
-let activeGender = "all";
+let activeRole        = "all";
+let activeGender      = "all";
+let activeNationality = "all";
 
 const ROLE_FILTER_ROLES = {
   model:        ["model"],
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCreatorsGrid();
   initRoleFilter();
   initGenderFilter();
+  initNationalityFilter();
   initHeaderScroll();
   initMobileMenu();
 });
@@ -64,6 +66,24 @@ function initGenderFilter() {
   });
 }
 
+function initNationalityFilter() {
+  document.querySelectorAll("#nationality-filter .creators-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#nationality-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeNationality = btn.dataset.nationality;
+      renderCreatorsGrid();
+    });
+  });
+}
+
+function getPersonNationality(p) {
+  const divs = DIVISIONS[p.agency_id];
+  if (!divs) return null;
+  if (divs.asian && divs.asian.includes(p.id)) return "asian";
+  return "international";
+}
+
 
 function renderCreatorsGrid() {
   const grid = document.getElementById("creators-grid");
@@ -82,18 +102,23 @@ function renderCreatorsGrid() {
     filtered = filtered.filter(p => p.gender === activeGender);
   }
 
+  if (activeNationality !== "all") {
+    filtered = filtered.filter(p => getPersonNationality(p) === activeNationality);
+  }
+
   grid.className = "creators-grid";
   grid.innerHTML = filtered.map(p => {
-    const bg = p.profile_image
-      ? `background: url('${p.profile_image}') center/cover no-repeat;`
-      : `background: ${p.color};`;
+    const imgContent = p.profile_image
+      ? `<img src="${p.profile_image}" alt="${p.name_en}" loading="lazy">`
+      : "";
+    const bgStyle = p.profile_image ? "" : `background: ${p.color};`;
 
     const agency = p.agency_id ? agencies.find(a => a.id === p.agency_id) : null;
     const agencyName = agency ? agency.name : "";
 
     return `
       <a class="creator-card" href="person.html?id=${p.id}">
-        <div class="creator-card-img" style="${bg}"></div>
+        <div class="creator-card-img" style="${bgStyle}">${imgContent}</div>
         <div class="creator-card-overlay">
           <div class="creator-card-name">${p.name_en}</div>
           ${p.name !== p.name_en ? `<div class="creator-card-sub">${p.name}</div>` : ""}

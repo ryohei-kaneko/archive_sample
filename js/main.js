@@ -160,12 +160,31 @@ function renderBrands() {
 
 
 // ── Render: Agencies ──
+const AGENCIES_ORDER_KEY = "credge_agencies_order";
+
+function getShuffledAgencies() {
+  const saved = sessionStorage.getItem(AGENCIES_ORDER_KEY);
+  if (saved) {
+    const ids = JSON.parse(saved);
+    const idMap = new Map(agencies.map(a => [a.id, a]));
+    const restored = ids.map(id => idMap.get(id)).filter(Boolean);
+    const savedSet = new Set(ids);
+    agencies.filter(a => !savedSet.has(a.id)).forEach(a => restored.push(a));
+    return restored;
+  }
+  const shuffled = [...agencies].sort(() => Math.random() - 0.5);
+  sessionStorage.setItem(AGENCIES_ORDER_KEY, JSON.stringify(shuffled.map(a => a.id)));
+  return shuffled;
+}
+
 function renderAgencies() {
   const grid = document.getElementById("agencies-grid");
   if (!grid) return;
 
+  const shuffled = getShuffledAgencies().slice(0, 9);
+
   grid.className = "agency-index-grid";
-  grid.innerHTML = agencies.map(ag => {
+  grid.innerHTML = shuffled.map(ag => {
     const typeLabel = ag.type === "model" ? "Model Agency" : "Creative Agency";
     return `
       <a class="agency-row" href="agency.html?id=${ag.id}">
@@ -173,7 +192,6 @@ function renderAgencies() {
           <div class="agency-row-name">${ag.name}</div>
           <div class="agency-row-sub">${typeLabel}</div>
         </div>
-        <div class="agency-row-arrow">→</div>
       </a>
     `;
   }).join("");

@@ -17,8 +17,9 @@
       <a href="index.html" class="logo">CREDGE</a>
       <nav class="main-nav">
         <a href="index.html">Works</a>
-        <a href="index.html#people-section">Creators</a>
+        <a href="creators.html">Creators</a>
         <a href="index.html#brands-section">Brands</a>
+        <a href="agencies.html">Agencies</a>
       </nav>
       <div class="header-actions">
         <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false">
@@ -31,8 +32,9 @@
   <!-- ========== MOBILE MENU ========== -->
   <nav id="mobile-menu">
     <a href="index.html">Works</a>
-    <a href="index.html#people-section">Creators</a>
+    <a href="creators.html">Creators</a>
     <a href="index.html#brands-section">Brands</a>
+    <a href="agencies.html">Agencies</a>
   </nav>
 
   <!-- ========== MAIN ========== -->
@@ -52,6 +54,18 @@
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Roster</h2>
+        </div>
+        <div class="creators-filters" id="roster-filters">
+          <div class="creators-filter" id="roster-gender-filter">
+            <button class="creators-filter-btn active" data-gender="all">All</button>
+            <button class="creators-filter-btn" data-gender="m">Men</button>
+            <button class="creators-filter-btn" data-gender="f">Women</button>
+          </div>
+          <div class="creators-filter" id="roster-division-filter" style="display:none;">
+            <button class="creators-filter-btn active" data-division="all">All</button>
+            <button class="creators-filter-btn" data-division="asian">Asian</button>
+            <button class="creators-filter-btn" data-division="international">International</button>
+          </div>
         </div>
         <div id="agency-roster-grid">
           <!-- Rendered by agency.js -->

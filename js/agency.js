@@ -3,6 +3,11 @@
    Requires: data.js
    =========================== */
 
+let fullRoster = [];
+let currentAgencyId = null;
+let activeRosterGender = "all";
+let activeRosterDivision = "all";
+
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const id     = params.get("id");
@@ -16,14 +21,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.title = `${agency.name} — CREDGE`;
 
-  const roster      = people.filter(p => p.agency_id === id);
-  const rosterNames = new Set(roster.map(p => p.name));
+  currentAgencyId = id;
+  const rawRoster = people.filter(p => p.agency_id === id);
+  const ROSTER_KEY = `credge_roster_order_${id}`;
+  const saved = sessionStorage.getItem(ROSTER_KEY);
+  if (saved) {
+    const ids = JSON.parse(saved);
+    const idMap = new Map(rawRoster.map(p => [p.id, p]));
+    fullRoster = ids.map(pid => idMap.get(pid)).filter(Boolean);
+    const savedSet = new Set(ids);
+    rawRoster.filter(p => !savedSet.has(p.id)).forEach(p => fullRoster.push(p));
+  } else {
+    fullRoster = [...rawRoster].sort(() => Math.random() - 0.5);
+    sessionStorage.setItem(ROSTER_KEY, JSON.stringify(fullRoster.map(p => p.id)));
+  }
+  const rosterNames = new Set(fullRoster.map(p => p.name));
   const agencyWorks = works.filter(w =>
     w.credits.some(c => rosterNames.has(c.person))
   );
 
-  renderAgencyHeader(agency, roster.length, agencyWorks.length);
-  renderAgencyRoster(roster);
+  renderAgencyHeader(agency, fullRoster.length, agencyWorks.length);
+  renderAgencyRoster();
+  initRosterFilter();
+  initDivisionFilter();
   renderAgencyWorks(agencyWorks);
   initModal();
   initHeaderScroll();
@@ -62,10 +82,50 @@ function renderAgencyHeader(agency, rosterCount, worksCount) {
 }
 
 
-function renderAgencyRoster(roster) {
+function getPersonDivision(personId) {
+  const divs = DIVISIONS[currentAgencyId];
+  if (!divs) return null;
+  return divs.asian && divs.asian.includes(personId) ? "asian" : "international";
+}
+
+function initRosterFilter() {
+  document.querySelectorAll("#roster-gender-filter .creators-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#roster-gender-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeRosterGender = btn.dataset.gender;
+      renderAgencyRoster();
+    });
+  });
+}
+
+function initDivisionFilter() {
+  const divFilter = document.getElementById("roster-division-filter");
+  if (!DIVISIONS[currentAgencyId]) return;
+  if (divFilter) divFilter.style.display = "";
+
+  document.querySelectorAll("#roster-division-filter .creators-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#roster-division-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeRosterDivision = btn.dataset.division;
+      renderAgencyRoster();
+    });
+  });
+}
+
+function renderAgencyRoster() {
   const countEl = document.getElementById("agency-roster-count");
   const grid    = document.getElementById("agency-roster-grid");
   if (!grid) return;
+
+  let roster = activeRosterGender === "all"
+    ? fullRoster
+    : fullRoster.filter(p => p.gender === activeRosterGender);
+
+  if (activeRosterDivision !== "all") {
+    roster = roster.filter(p => getPersonDivision(p.id) === activeRosterDivision);
+  }
 
   if (countEl) countEl.textContent = roster.length;
 
