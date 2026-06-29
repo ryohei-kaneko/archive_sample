@@ -1465,8 +1465,15 @@ a.agency-row:hover { opacity: 0.65; }
    CREATORS PAGE
    =========================== */
 
+.creators-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
 .creators-filter {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 .creators-filter-btn {
@@ -1484,6 +1491,17 @@ a.agency-row:hover { opacity: 0.65; }
 }
 .creators-filter-btn:hover { color: var(--text); border-color: var(--text); }
 .creators-filter-btn.active { background: var(--text); border-color: var(--text); color: var(--white); }
+
+#gender-filter .creators-filter-btn {
+  border: none;
+  padding: 3px 10px;
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+}
+#gender-filter .creators-filter-btn:hover { background: none; border-color: transparent; border-bottom-color: var(--text-muted); color: var(--text); }
+#gender-filter .creators-filter-btn.active { background: none; border-color: transparent; border-bottom-color: var(--text); color: var(--text); font-weight: 500; }
 
 .creators-grid {
   display: grid;

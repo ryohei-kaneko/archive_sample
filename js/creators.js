@@ -4,6 +4,19 @@
    =========================== */
 
 let shuffledPeople = [];
+let activeRole   = "all";
+let activeGender = "all";
+
+const ROLE_FILTER_ROLES = {
+  model:        ["model"],
+  photographer: ["photographer"],
+  stylist:      ["stylist"],
+  makeup:       ["makeup", "hair_makeup"],
+  hair:         ["hair", "hair_makeup"],
+  casting:      ["casting"],
+  set_designer: ["set_designer"],
+  art_director: ["art_director"],
+};
 
 const CREATORS_ORDER_KEY = "credge_creators_order";
 
@@ -21,29 +34,53 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionStorage.setItem(CREATORS_ORDER_KEY, JSON.stringify(shuffledPeople.map(p => p.id)));
   }
 
-  renderCreatorsGrid("all");
+  renderCreatorsGrid();
+  initRoleFilter();
   initGenderFilter();
   initHeaderScroll();
   initMobileMenu();
 });
 
 
-function initGenderFilter() {
-  document.querySelectorAll(".creators-filter-btn").forEach(btn => {
+function initRoleFilter() {
+  document.querySelectorAll("#role-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".creators-filter-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#role-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      renderCreatorsGrid(btn.dataset.gender);
+      activeRole = btn.dataset.role;
+      renderCreatorsGrid();
+    });
+  });
+}
+
+function initGenderFilter() {
+  document.querySelectorAll("#gender-filter .creators-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#gender-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeGender = btn.dataset.gender;
+      renderCreatorsGrid();
     });
   });
 }
 
 
-function renderCreatorsGrid(gender) {
+function renderCreatorsGrid() {
   const grid = document.getElementById("creators-grid");
   if (!grid) return;
 
-  const filtered = gender === "all" ? shuffledPeople : shuffledPeople.filter(p => p.gender === gender);
+  let filtered = shuffledPeople;
+
+  if (activeRole !== "all") {
+    const roles = ROLE_FILTER_ROLES[activeRole] || [activeRole];
+    filtered = filtered.filter(p =>
+      roles.some(r => p.primary_role === r || (p.roles && p.roles.includes(r)))
+    );
+  }
+
+  if (activeGender !== "all") {
+    filtered = filtered.filter(p => p.gender === activeGender);
+  }
 
   grid.className = "creators-grid";
   grid.innerHTML = filtered.map(p => {
