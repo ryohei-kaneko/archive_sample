@@ -1493,7 +1493,7 @@ a.agency-row:hover { opacity: 0.65; }
 .creators-filter-btn.active { background: var(--text); border-color: var(--text); color: var(--white); }
 
 #gender-filter .creators-filter-btn,
-#roster-division-filter .creators-filter-btn {
+#roster-gender-filter .creators-filter-btn {
   border: none;
   padding: 3px 10px;
   font-size: 10.5px;
@@ -1502,11 +1502,12 @@ a.agency-row:hover { opacity: 0.65; }
   border-bottom: 1px solid transparent;
 }
 #gender-filter .creators-filter-btn:hover,
-#roster-division-filter .creators-filter-btn:hover { background: none; border-color: transparent; border-bottom-color: var(--text-muted); color: var(--text); }
+#roster-gender-filter .creators-filter-btn:hover { background: none; border-color: transparent; border-bottom-color: var(--text-muted); color: var(--text); }
 #gender-filter .creators-filter-btn.active,
-#roster-division-filter .creators-filter-btn.active { background: none; border-color: transparent; border-bottom-color: var(--text); color: var(--text); font-weight: 500; }
+#roster-gender-filter .creators-filter-btn.active { background: none; border-color: transparent; border-bottom-color: var(--text); color: var(--text); font-weight: 500; }
 
-#nationality-filter .creators-filter-btn {
+#nationality-filter .creators-filter-btn,
+#roster-division-filter .creators-filter-btn {
   border: none;
   padding: 2px 8px;
   font-size: 10px;
@@ -1515,8 +1516,10 @@ a.agency-row:hover { opacity: 0.65; }
   opacity: 0.5;
   letter-spacing: 0.04em;
 }
-#nationality-filter .creators-filter-btn:hover { background: none; opacity: 0.8; color: var(--text); }
-#nationality-filter .creators-filter-btn.active { background: none; opacity: 1; color: var(--text); font-weight: 500; }
+#nationality-filter .creators-filter-btn:hover,
+#roster-division-filter .creators-filter-btn:hover { background: none; opacity: 0.8; color: var(--text); }
+#nationality-filter .creators-filter-btn.active,
+#roster-division-filter .creators-filter-btn.active { background: none; opacity: 1; color: var(--text); font-weight: 500; }
 
 .creators-grid {
   display: grid;

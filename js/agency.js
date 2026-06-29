@@ -7,6 +7,17 @@ let fullRoster = [];
 let currentAgencyId = null;
 let activeRosterGender = "all";
 let activeRosterDivision = "all";
+let activeRosterRole = "all";
+
+const ROSTER_ROLE_FILTER = {
+  model:        ["model"],
+  photographer: ["photographer"],
+  stylist:      ["stylist"],
+  hair_make:    ["makeup", "hair", "hair_makeup"],
+  casting:      ["casting"],
+  set_designer: ["set_designer"],
+  art_director: ["art_director"],
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
@@ -44,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAgencyRoster();
   initRosterFilter();
   initDivisionFilter();
+  initRoleFilter();
   renderAgencyWorks(agencyWorks);
   initModal();
   initHeaderScroll();
@@ -114,6 +126,20 @@ function initDivisionFilter() {
   });
 }
 
+function initRoleFilter() {
+  const roleFilter = document.getElementById("roster-role-filter");
+  if (!roleFilter) return;
+
+  document.querySelectorAll("#roster-role-filter .creators-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#roster-role-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeRosterRole = btn.dataset.role;
+      renderAgencyRoster();
+    });
+  });
+}
+
 function renderAgencyRoster() {
   const countEl = document.getElementById("agency-roster-count");
   const grid    = document.getElementById("agency-roster-grid");
@@ -125,6 +151,11 @@ function renderAgencyRoster() {
 
   if (activeRosterDivision !== "all") {
     roster = roster.filter(p => getPersonDivision(p.id) === activeRosterDivision);
+  }
+
+  if (activeRosterRole !== "all") {
+    const roles = ROSTER_ROLE_FILTER[activeRosterRole] || [activeRosterRole];
+    roster = roster.filter(p => roles.some(r => p.primary_role === r || (p.roles && p.roles.includes(r))));
   }
 
   if (countEl) countEl.textContent = roster.length;
