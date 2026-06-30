@@ -17,6 +17,10 @@ const ROSTER_ROLE_FILTER = {
   casting:      ["casting"],
   set_designer: ["set_designer"],
   art_director: ["art_director"],
+  actor:        ["actor"],
+  dancer:       ["dancer"],
+  kid:          ["kid"],
+  illustrator:  ["illustrator"],
 };
 
 document.addEventListener("DOMContentLoaded", () => {

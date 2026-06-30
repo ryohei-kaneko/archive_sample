@@ -16,6 +16,10 @@ const ROLE_FILTER_ROLES = {
   casting:      ["casting"],
   set_designer: ["set_designer"],
   art_director: ["art_director"],
+  actor:        ["actor"],
+  dancer:       ["dancer"],
+  kid:          ["kid"],
+  illustrator:  ["illustrator"],
 };
 
 const CREATORS_ORDER_KEY = "credge_creators_order";
