@@ -151,7 +151,9 @@ function renderAgencyRoster() {
 
   let roster = activeRosterGender === "all"
     ? fullRoster
-    : fullRoster.filter(p => p.gender === activeRosterGender);
+    : activeRosterGender === "direct"
+      ? fullRoster.filter(p => p.direct_booking)
+      : fullRoster.filter(p => p.gender === activeRosterGender && !p.direct_booking);
 
   if (activeRosterDivision !== "all") {
     roster = roster.filter(p => getPersonDivision(p.id) === activeRosterDivision);

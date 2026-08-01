@@ -38,12 +38,23 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionStorage.setItem(CREATORS_ORDER_KEY, JSON.stringify(shuffledPeople.map(p => p.id)));
   }
 
+  const urlRole = new URLSearchParams(window.location.search).get("role");
+  if (urlRole && ROLE_FILTER_ROLES[urlRole]) {
+    activeRole = urlRole;
+  }
+
   renderCreatorsGrid();
   initRoleFilter();
   initGenderFilter();
   initNationalityFilter();
   initHeaderScroll();
   initMobileMenu();
+
+  if (urlRole && ROLE_FILTER_ROLES[urlRole]) {
+    document.querySelectorAll("#role-filter .creators-filter-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.role === urlRole);
+    });
+  }
 });
 
 
