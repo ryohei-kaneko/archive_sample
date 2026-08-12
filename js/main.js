@@ -26,8 +26,9 @@ function renderWorks() {
     return matchType && matchRole && matchQ;
   });
 
-  // Homepage teaser is one row (3-col grid) — the full list lives on works.html.
-  const limit = 3;
+  // Homepage teaser is one row (3-col grid on desktop, 2-col on SP —
+  // 4 items fills that as a clean 2x2). Full list lives on works.html.
+  const limit = window.innerWidth <= 520 ? 4 : 3;
   grid.innerHTML = filtered.length === 0
     ? `<div class="no-results">No works found.</div>`
     : filtered.slice(0, limit).map(renderCard).join("");
