@@ -7,6 +7,8 @@ let shuffledPeople = [];
 let activeRole        = "all";
 let activeGender      = "all";
 let activeNationality = "all";
+let activeHeightMin   = null;
+let activeHeightMax   = null;
 
 const ROLE_FILTER_ROLES = {
   model:        ["model"],
@@ -47,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initRoleFilter();
   initGenderFilter();
   initNationalityFilter();
+  initHeightFilter();
   initHeaderScroll();
   initMobileMenu();
 
@@ -58,12 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// Each filter group behaves as a toggle: clicking the already-active
+// button deselects it, falling back to "all" (unfiltered) — there is no
+// dedicated "All" button since it's rarely used on its own.
 function initRoleFilter() {
   document.querySelectorAll("#role-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      const wasActive = btn.classList.contains("active");
       document.querySelectorAll("#role-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeRole = btn.dataset.role;
+      if (wasActive) {
+        activeRole = "all";
+      } else {
+        btn.classList.add("active");
+        activeRole = btn.dataset.role;
+      }
       renderCreatorsGrid();
     });
   });
@@ -72,9 +83,14 @@ function initRoleFilter() {
 function initGenderFilter() {
   document.querySelectorAll("#gender-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      const wasActive = btn.classList.contains("active");
       document.querySelectorAll("#gender-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeGender = btn.dataset.gender;
+      if (wasActive) {
+        activeGender = "all";
+      } else {
+        btn.classList.add("active");
+        activeGender = btn.dataset.gender;
+      }
       renderCreatorsGrid();
     });
   });
@@ -83,11 +99,34 @@ function initGenderFilter() {
 function initNationalityFilter() {
   document.querySelectorAll("#nationality-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      const wasActive = btn.classList.contains("active");
       document.querySelectorAll("#nationality-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeNationality = btn.dataset.nationality;
+      if (wasActive) {
+        activeNationality = "all";
+      } else {
+        btn.classList.add("active");
+        activeNationality = btn.dataset.nationality;
+      }
       renderCreatorsGrid();
     });
+  });
+}
+
+// Free-entry min/max (cm) rather than preset buttons, since the useful
+// range varies person to person — e.g. "170–180". Either side can be
+// left blank for an open-ended range.
+function initHeightFilter() {
+  const minInput = document.getElementById("height-min");
+  const maxInput = document.getElementById("height-max");
+  if (!minInput || !maxInput) return;
+
+  minInput.addEventListener("input", () => {
+    activeHeightMin = minInput.value === "" ? null : Number(minInput.value);
+    renderCreatorsGrid();
+  });
+  maxInput.addEventListener("input", () => {
+    activeHeightMax = maxInput.value === "" ? null : Number(maxInput.value);
+    renderCreatorsGrid();
   });
 }
 
@@ -118,6 +157,16 @@ function renderCreatorsGrid() {
 
   if (activeNationality !== "all") {
     filtered = filtered.filter(p => getPersonNationality(p) === activeNationality);
+  }
+
+  if (activeHeightMin !== null || activeHeightMax !== null) {
+    filtered = filtered.filter(p => {
+      const h = p.measurements && p.measurements.height;
+      if (h == null) return false;
+      if (activeHeightMin !== null && h < activeHeightMin) return false;
+      if (activeHeightMax !== null && h > activeHeightMax) return false;
+      return true;
+    });
   }
 
   grid.className = "creators-grid";

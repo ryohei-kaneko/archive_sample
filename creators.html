@@ -25,7 +25,7 @@
             <a href="creators.html?role=stylist">Stylists</a>
           </div>
         </div>
-        <a href="index.html#brands-section">Brands</a>
+        <a href="brands.html">Brands</a>
         <a href="index.html#agencies-section">Agencies</a>
       </nav>
       <div class="header-actions">
@@ -40,7 +40,7 @@
   <nav id="mobile-menu" aria-label="Mobile navigation">
     <a href="index.html">Works</a>
     <a href="creators.html">Creators</a>
-    <a href="index.html#brands-section">Brands</a>
+    <a href="brands.html">Brands</a>
     <a href="index.html#agencies-section">Agencies</a>
   </nav>
 
@@ -53,7 +53,6 @@
         </div>
         <div class="creators-filters">
           <div class="creators-filter" id="role-filter">
-            <button class="creators-filter-btn active" data-role="all">All</button>
             <button class="creators-filter-btn" data-role="model">Models</button>
             <button class="creators-filter-btn" data-role="photographer">Photographers</button>
             <button class="creators-filter-btn" data-role="stylist">Stylists</button>
@@ -67,15 +66,20 @@
             <button class="creators-filter-btn" data-role="illustrator">Illustrator</button>
           </div>
           <div class="creators-filter" id="gender-filter">
-            <button class="creators-filter-btn active" data-gender="all">All</button>
             <button class="creators-filter-btn" data-gender="m">Men</button>
             <button class="creators-filter-btn" data-gender="f">Women</button>
             <button class="creators-filter-btn" data-gender="nb">Non-Binary</button>
           </div>
           <div class="creators-filter" id="nationality-filter">
-            <button class="creators-filter-btn active" data-nationality="all">All</button>
             <button class="creators-filter-btn" data-nationality="asian">Asian</button>
             <button class="creators-filter-btn" data-nationality="international">Mix / International</button>
+          </div>
+          <div class="creators-height-filter" id="height-filter">
+            <span class="height-filter-label">Height</span>
+            <input type="number" id="height-min" inputmode="numeric" placeholder="Min" min="0" max="220" aria-label="身長 最小 (cm)">
+            <span class="height-filter-sep">–</span>
+            <input type="number" id="height-max" inputmode="numeric" placeholder="Max" min="0" max="220" aria-label="身長 最大 (cm)">
+            <span class="height-filter-unit">cm</span>
           </div>
         </div>
         <div id="creators-grid">

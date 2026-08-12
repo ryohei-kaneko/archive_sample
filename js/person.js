@@ -43,11 +43,13 @@ function renderPersonHeader(person, agency, workCount) {
       ${person.instagram_url
         ? `<a class="person-link" href="${person.instagram_url}" target="_blank" rel="noopener">Instagram</a>`
         : ""}
-      ${person.composite_url
-        ? `<a class="person-link" href="${person.composite_url}" target="_blank" rel="noopener">Composite</a>`
-        : ""}
     </div>
   `;
+
+  // "Book via Agency" links to the model's individual page on the agency's
+  // own site (formerly surfaced separately as "Composite"), falling back
+  // to the agency's general website if that isn't available.
+  const bookingUrl = person.composite_url || agency?.website;
 
   const agencyHTML = agency
     ? `
@@ -56,8 +58,8 @@ function renderPersonHeader(person, agency, workCount) {
           <span class="person-agency-label">Model Agency</span>
           ${agency.name}
         </a>
-        ${agency.website && agency.website !== "#"
-          ? `<a class="btn-booking" href="${agency.website}" target="_blank" rel="noopener">Book via Agency →</a>`
+        ${bookingUrl && bookingUrl !== "#"
+          ? `<a class="btn-booking" href="${bookingUrl}" target="_blank" rel="noopener">Book via Agency →</a>`
           : ""}
       </div>
     `

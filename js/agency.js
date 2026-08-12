@@ -104,12 +104,20 @@ function getPersonDivision(personId) {
   return divs.asian && divs.asian.includes(personId) ? "asian" : "international";
 }
 
+// Each filter group behaves as a toggle: clicking the already-active
+// button deselects it, falling back to "all" (unfiltered) — there is no
+// dedicated "All" button since it's rarely used on its own.
 function initRosterFilter() {
   document.querySelectorAll("#roster-gender-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      const wasActive = btn.classList.contains("active");
       document.querySelectorAll("#roster-gender-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeRosterGender = btn.dataset.gender;
+      if (wasActive) {
+        activeRosterGender = "all";
+      } else {
+        btn.classList.add("active");
+        activeRosterGender = btn.dataset.gender;
+      }
       renderAgencyRoster();
     });
   });
@@ -122,9 +130,14 @@ function initDivisionFilter() {
 
   document.querySelectorAll("#roster-division-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      const wasActive = btn.classList.contains("active");
       document.querySelectorAll("#roster-division-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeRosterDivision = btn.dataset.division;
+      if (wasActive) {
+        activeRosterDivision = "all";
+      } else {
+        btn.classList.add("active");
+        activeRosterDivision = btn.dataset.division;
+      }
       renderAgencyRoster();
     });
   });
@@ -136,9 +149,14 @@ function initRoleFilter() {
 
   document.querySelectorAll("#roster-role-filter .creators-filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      const wasActive = btn.classList.contains("active");
       document.querySelectorAll("#roster-role-filter .creators-filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeRosterRole = btn.dataset.role;
+      if (wasActive) {
+        activeRosterRole = "all";
+      } else {
+        btn.classList.add("active");
+        activeRosterRole = btn.dataset.role;
+      }
       renderAgencyRoster();
     });
   });
@@ -171,19 +189,20 @@ function renderAgencyRoster() {
     return;
   }
 
-  grid.className = "agency-roster-grid";
+  grid.className = "creators-grid";
   grid.innerHTML = roster.map(p => {
-    const avatarInner = p.profile_image
-      ? `<img src="${p.profile_image}" alt="${p.name}">`
-      : p.name.slice(0, 1);
+    const imgContent = p.profile_image
+      ? `<img src="${p.profile_image}" alt="${p.name_en}" loading="lazy">`
+      : "";
+    const bgStyle = p.profile_image ? "" : `background: ${p.color};`;
+
     return `
-      <a class="person-row" href="person.html?id=${p.id}">
-        <div class="person-row-avatar" style="${p.profile_image ? "" : `background:${p.color};`}">
-          ${avatarInner}
-        </div>
-        <div class="person-row-info">
-          <div class="person-row-name">${p.name_en.toUpperCase()}</div>
-          <div class="person-row-sub">${p.name} &nbsp;·&nbsp; ${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
+      <a class="creator-card" href="person.html?id=${p.id}">
+        <div class="creator-card-img" style="${bgStyle}">${imgContent}</div>
+        <div class="creator-card-overlay">
+          <div class="creator-card-name">${p.name_en}</div>
+          ${p.name !== p.name_en ? `<div class="creator-card-sub">${p.name}</div>` : ""}
+          <div class="creator-card-role">${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
         </div>
       </a>
     `;

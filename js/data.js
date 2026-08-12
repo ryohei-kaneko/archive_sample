@@ -142,19 +142,35 @@ const agencies = [
   { id: "a-tomorrow", name: "TOMORROW TOKYO",  type: "model", website: "https://www.tomorrowtokyo.com/", instagram_url: "https://www.instagram.com/tomorrow_tokyo/" },
 ];
 
+// Rakuten Fashion Week Tokyo 2027SS 参加ブランド
+// instagram_url は各ブランドの website (Rakuten Fashion Week 掲載ページ) に
+// 記載があったもののみ設定。記載が無いブランドは null。
 const brands = [
-  { id: "b1",  name: "TOGA",             category: "womens",  works: 4 },
-  { id: "b2",  name: "SACAI",            category: "unisex",  works: 3 },
-  { id: "b3",  name: "HYKE",             category: "womens",  works: 3 },
-  { id: "b4",  name: "ISSEY MIYAKE",     category: "unisex",  works: 5 },
-  { id: "b5",  name: "Fumito Ganryu",    category: "mens",    works: 2 },
-  { id: "b6",  name: "STUDIO NICHOLSON", category: "unisex",  works: 2 },
-  { id: "b7",  name: "BEAMS",            category: "unisex",  works: 3 },
-  { id: "b8",  name: "nest Robe",        category: "womens",  works: 4 },
-  { id: "b9",  name: "YANUK",            category: "womens",  works: 3 },
-  { id: "b10", name: "UNITED ARROWS",    category: "unisex",  works: 5 },
-  { id: "b11", name: "IENA",             category: "womens",  works: 2 },
-  { id: "b12", name: "SHISEIDO",         category: "beauty",  works: 2 },
+  { id: "b-yoshio-kubo",            name: "yoshiokubo",             website: "https://rakutenfashionweektokyo.com/jp/brands/detail/yoshio-kubo/",            instagram_url: "https://www.instagram.com/yoshiokubo_official/" },
+  { id: "b-seivson",                name: "Seivson",                website: "https://rakutenfashionweektokyo.com/jp/brands/detail/seivson/",                instagram_url: "https://www.instagram.com/seivson.official/" },
+  { id: "b-whitenook",              name: "WHiTENOOK",              website: "https://rakutenfashionweektokyo.com/jp/brands/detail/whitenook/",              instagram_url: null },
+  { id: "b-enfold",                 name: "ENFÖLD",                 website: "https://rakutenfashionweektokyo.com/jp/brands/detail/enfold/",                 instagram_url: "https://www.instagram.com/enfold_official/" },
+  { id: "b-support-surface",        name: "support surface",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/support-surface/",        instagram_url: "https://www.instagram.com/supportsurfaceofficial/" },
+  { id: "b-mitsuru-okazaki",        name: "MITSURU OKAZAKI",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/mitsuru-okazaki/",        instagram_url: "https://www.instagram.com/mitsuruokazaki_design_lab/" },
+  { id: "b-megmiura-wardrobe",      name: "MEGUMIURA WARDROBE",     website: "https://rakutenfashionweektokyo.com/jp/brands/detail/megmiura-wardrobe/",      instagram_url: "https://www.instagram.com/megmiura_wardrobe/" },
+  { id: "b-eitaro",                 name: "EITARO",                 website: "https://rakutenfashionweektokyo.com/jp/brands/detail/eitaro/",                 instagram_url: "https://www.instagram.com/eitaro.official/" },
+  { id: "b-keiko-nishiyama",        name: "KEIKO NISHIYAMA",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/keiko-nishiyama/",        instagram_url: "https://www.instagram.com/keikonishiyama/" },
+  { id: "b-pillings",               name: "pillings",               website: "https://rakutenfashionweektokyo.com/jp/brands/detail/pillings/",               instagram_url: "https://www.instagram.com/pillings_/" },
+  { id: "b-kakan",                  name: "KAN KAN",                website: "https://rakutenfashionweektokyo.com/jp/brands/detail/kakan/",                  instagram_url: "https://www.instagram.com/kakan.ars/" },
+  { id: "b-yushokobayashi",         name: "yushokobayashi",         website: "https://rakutenfashionweektokyo.com/jp/brands/detail/yushokobayashi/",         instagram_url: "https://www.instagram.com/yushokobayashi/" },
+  { id: "b-requal",                 name: "RequaL≡",                website: "https://rakutenfashionweektokyo.com/jp/brands/detail/requal/",                 instagram_url: "https://www.instagram.com/re_qual_/" },
+  { id: "b-mizen",                  name: "MIZEN",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/mizen/",                  instagram_url: "https://www.instagram.com/mizenofficial/" },
+  { id: "b-haute-mode-hirata",      name: "Haute Mode Hirata",      website: "https://rakutenfashionweektokyo.com/jp/brands/detail/haute-mode-hirata/",      instagram_url: "https://www.instagram.com/haute_mode_hirata/" },
+  { id: "b-c-jean",                 name: "C JEAN",                 website: "https://rakutenfashionweektokyo.com/jp/brands/detail/c-jean/",                 instagram_url: "https://www.instagram.com/cjean_official/" },
+  { id: "b-charinyeh",              name: "CHARINYEH",              website: "https://rakutenfashionweektokyo.com/jp/brands/detail/charinyeh/",              instagram_url: "https://www.instagram.com/charinyeh/" },
+  { id: "b-sonia-carrasco",         name: "SONIA CARRASCO",         website: "https://rakutenfashionweektokyo.com/jp/brands/detail/sonia-carrasco/",         instagram_url: "https://www.instagram.com/soniacarrascoofficial/" },
+  { id: "b-anthony-calydon",        name: "ANTHONY CALYDON",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/anthony-calydon/",        instagram_url: null },
+  { id: "b-wisharawish",            name: "WISHARAWISH",            website: "https://rakutenfashionweektokyo.com/jp/brands/detail/wisharawish/",            instagram_url: "https://www.instagram.com/wisharawish_official/" },
+  { id: "b-anna-choi",              name: "ANNA CHOI",              website: "https://rakutenfashionweektokyo.com/jp/brands/detail/anna-choi/",              instagram_url: "https://www.instagram.com/maisonannachoi/" },
+  { id: "b-yukihero-pro-wrestling", name: "YUKIHERO PRO-WRESTLING", website: "https://rakutenfashionweektokyo.com/jp/brands/detail/yukihero-pro-wrestling/", instagram_url: "https://www.instagram.com/yukihero_prowrestling/" },
+  { id: "b-orimi",                  name: "ORIMI",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/orimi/",                  instagram_url: "https://www.instagram.com/orimi.official/" },
+  { id: "b-khoki",                  name: "KHOKI",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/khoki/",                  instagram_url: "https://www.instagram.com/khoki146/" },
+  { id: "b-kudos-soduk",            name: "soduk",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/kudos-soduk/",            instagram_url: "https://www.instagram.com/soduk_official/" },
 ];
 
 const people = [
@@ -3223,7 +3239,7 @@ const people = [
     measurements: { height: 180, bust: 80, waist: 69, hip: 88, shoe: 27.5 },
     composite_url: "http://www.donnamodels.jp/portfolios/kazuaki-obayashi",
     instagram_url: "https://www.instagram.com/kzzzzak",
-    profile_image: "https://cdn.syngency.com/138/models/1499675/galleries/2584798/large/22784932.jpg?1780389229",
+    profile_image: "https://cdn.syngency.com/138/models/1499675/galleries/2584798/large/23012735.jpg?1783636476",
     portfolio_images: [],
     gender: "m", color: "#1A2028", is_verified: true,
   },

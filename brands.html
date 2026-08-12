@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CREDGE</title>
+  <title>Brands — CREDGE</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
   <header id="header">
     <div class="header-inner">
       <a href="index.html" class="logo">CREDGE</a>
-      <nav class="main-nav">
+      <nav class="main-nav" aria-label="Main navigation">
         <a href="index.html">Works</a>
         <div class="nav-item">
           <a href="creators.html">Creators</a>
@@ -25,11 +25,11 @@
             <a href="creators.html?role=stylist">Stylists</a>
           </div>
         </div>
-        <a href="brands.html">Brands</a>
-        <a href="index.html#agencies-section">Agencies</a>
+        <a href="brands.html" class="active">Brands</a>
+        <a href="agencies.html">Agencies</a>
       </nav>
       <div class="header-actions">
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false">
+        <button class="menu-toggle" id="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -37,37 +37,25 @@
   </header>
 
   <!-- ========== MOBILE MENU ========== -->
-  <nav id="mobile-menu">
+  <nav id="mobile-menu" aria-label="Mobile navigation">
     <a href="index.html">Works</a>
     <a href="creators.html">Creators</a>
     <a href="brands.html">Brands</a>
-    <a href="index.html#agencies-section">Agencies</a>
+    <a href="agencies.html">Agencies</a>
   </nav>
 
   <!-- ========== MAIN ========== -->
-  <main id="person-main">
-
-    <!-- Person Profile -->
-    <section id="person-header-section" style="border-bottom:1px solid var(--border);padding:48px 0 64px;">
-      <div class="container">
-<div id="person-header">
-          <!-- Rendered by person.js -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Person Works -->
+  <main>
     <section class="section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Works</h2>
+          <h2 class="section-title">Brands</h2>
         </div>
-        <div id="person-works-grid">
-          <!-- Rendered by person.js -->
+        <div id="brands-grid" aria-label="ブランド一覧">
+          <!-- Rendered by JS -->
         </div>
       </div>
     </section>
-
   </main>
 
   <!-- ========== FOOTER ========== -->
@@ -77,7 +65,7 @@
         <div>
           <div class="footer-logo">CREDGE</div>
         </div>
-        <nav class="footer-links">
+        <nav class="footer-links" aria-label="Footer navigation">
           <a href="#">About</a>
           <a href="#">Submit Work</a>
           <a href="#">Terms</a>
@@ -89,23 +77,7 @@
     </div>
   </footer>
 
-  <!-- ========== CREDITS MODAL ========== -->
-  <div id="credits-modal" aria-hidden="true">
-    <div id="cm-backdrop"></div>
-    <div class="cm-panel">
-      <button id="cm-close" aria-label="Close">✕</button>
-      <div class="cm-panel-inner">
-        <div class="cm-header">
-          <div class="cm-brand" id="cm-brand"></div>
-          <div class="cm-title" id="cm-title"></div>
-          <div class="cm-season" id="cm-season"></div>
-        </div>
-        <div class="cm-credits" id="cm-credits"></div>
-      </div>
-    </div>
-  </div>
-
   <script src="js/data.js"></script>
-  <script src="js/person.js"></script>
+  <script src="js/brands.js"></script>
 </body>
 </html>

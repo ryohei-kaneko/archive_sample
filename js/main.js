@@ -137,25 +137,37 @@ function renderPeople() {
 
 
 // ── Render: Brands ──
+const BRANDS_ORDER_KEY = "credge_brands_order";
+
+function getShuffledBrands() {
+  const saved = sessionStorage.getItem(BRANDS_ORDER_KEY);
+  if (saved) {
+    const ids = JSON.parse(saved);
+    const idMap = new Map(brands.map(b => [b.id, b]));
+    const restored = ids.map(id => idMap.get(id)).filter(Boolean);
+    const savedSet = new Set(ids);
+    brands.filter(b => !savedSet.has(b.id)).forEach(b => restored.push(b));
+    return restored;
+  }
+  const shuffled = [...brands].sort(() => Math.random() - 0.5);
+  sessionStorage.setItem(BRANDS_ORDER_KEY, JSON.stringify(shuffled.map(b => b.id)));
+  return shuffled;
+}
+
 function renderBrands() {
-  const row = document.getElementById("brands-row");
-  if (!row) return;
+  const grid = document.getElementById("brands-grid");
+  if (!grid) return;
 
-  row.innerHTML = brands.map(b => `
-    <button class="brand-chip" data-brand="${b.name}">
-      ${b.name}
-    </button>
+  const shuffled = getShuffledBrands().slice(0, 9);
+
+  grid.className = "agency-index-grid";
+  grid.innerHTML = shuffled.map(b => `
+    <a class="agency-row" href="brand.html?id=${b.id}">
+      <div class="agency-row-info">
+        <div class="agency-row-name">${b.name}</div>
+      </div>
+    </a>
   `).join("");
-
-  row.querySelectorAll(".brand-chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-      const active = chip.classList.toggle("active");
-      searchQuery = active ? chip.dataset.brand.toLowerCase() : "";
-      document.querySelectorAll(".brand-chip").forEach(c => { if (c !== chip) c.classList.remove("active"); });
-      renderWorks();
-      document.getElementById("works-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  });
 }
 
 
@@ -204,11 +216,12 @@ function clearRoleHighlight() {
 
 // ── Search ──
 function initSearch() {
-  const overlay  = document.getElementById("search-overlay");
-  const input    = document.getElementById("search-input");
-  const results  = document.getElementById("search-results");
-  const openBtn  = document.getElementById("btn-search-open");
-  const closeBtn = document.getElementById("btn-search-close");
+  const overlay    = document.getElementById("search-overlay");
+  const input      = document.getElementById("search-input");
+  const results    = document.getElementById("search-results");
+  const openBtn    = document.getElementById("btn-search-open");
+  const closeBtn   = document.getElementById("btn-search-close");
+  const heroInput  = document.getElementById("hero-search-input");
 
   function openSearch() {
     overlay?.classList.add("open");
@@ -218,6 +231,7 @@ function initSearch() {
   function closeSearch() {
     overlay?.classList.remove("open");
     if (input) { input.value = ""; }
+    if (heroInput) { heroInput.value = ""; }
     if (results) { results.innerHTML = ""; }
   }
 
@@ -227,6 +241,17 @@ function initSearch() {
 
   input?.addEventListener("input", () => {
     const q = input.value.toLowerCase().trim();
+    if (!q) { results.innerHTML = ""; return; }
+    renderSearchResults(q, results);
+  });
+
+  // The hero search box is a always-visible entry point into the same
+  // overlay: focusing it opens the overlay, and anything typed before
+  // focus lands there is mirrored over so no keystrokes are lost.
+  heroInput?.addEventListener("focus", openSearch);
+  heroInput?.addEventListener("input", () => {
+    if (input) input.value = heroInput.value;
+    const q = heroInput.value.toLowerCase().trim();
     if (!q) { results.innerHTML = ""; return; }
     renderSearchResults(q, results);
   });
@@ -245,6 +270,14 @@ function renderSearchResults(q, container) {
     p.name.toLowerCase().includes(q) ||
     p.name_en.toLowerCase().includes(q) ||
     (p.name_kana && p.name_kana.toLowerCase().includes(q))
+  );
+
+  const matchedBrands = brands.filter(b =>
+    b.name.toLowerCase().includes(q)
+  );
+
+  const matchedAgencies = agencies.filter(a =>
+    a.name.toLowerCase().includes(q)
   );
 
   const matchedWorks = works.filter(w =>
@@ -266,6 +299,25 @@ function renderSearchResults(q, container) {
       <a class="search-result-item" href="person.html?id=${p.id}">
         <div class="search-result-name">${p.name_en}</div>
         <div class="search-result-sub">${p.name} · ${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
+      </a>
+    `).join("");
+  }
+
+  if (matchedBrands.length > 0) {
+    html += `<div class="search-group-label">Brands</div>`;
+    html += matchedBrands.map(b => `
+      <a class="search-result-item" href="brand.html?id=${b.id}">
+        <div class="search-result-name">${b.name}</div>
+      </a>
+    `).join("");
+  }
+
+  if (matchedAgencies.length > 0) {
+    html += `<div class="search-group-label">Agencies</div>`;
+    html += matchedAgencies.map(a => `
+      <a class="search-result-item" href="agency.html?id=${a.id}">
+        <div class="search-result-name">${a.name}</div>
+        <div class="search-result-sub">${a.type === "model" ? "Model Agency" : "Creative Agency"}</div>
       </a>
     `).join("");
   }
