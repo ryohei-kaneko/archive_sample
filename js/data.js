@@ -6556,6 +6556,45 @@ const people = [
 
 const works = [
   {
+    id: "w13", title: "REFOMED 2027SS",
+    type: "look_book", brand_id: null, brand: "REFOMED", season: "2027SS", year: 2027,
+    tags: [],
+    is_published: true, featured: false, color: "#1E1E1C", accent: "#C0A070",
+    image_url: "images/refomed_27ss.jpg",
+    credits: [
+      { credit_role: "photographer", person: "samplesample", order_index: 1 },
+      { credit_role: "stylist",      person: "samplesample", order_index: 1 },
+      { credit_role: "hair_makeup",  person: "samplesample", order_index: 1 },
+      { credit_role: "model",        person: "samplesample", order_index: 1 },
+    ],
+  },
+  {
+    id: "w14", title: "saby 2027SS",
+    type: "look_book", brand_id: null, brand: "saby", season: "2027SS", year: 2027,
+    tags: [],
+    is_published: true, featured: false, color: "#1E1E1C", accent: "#C0A070",
+    image_url: "images/saby_2027ss.jpg",
+    credits: [
+      { credit_role: "photographer", person: "samplesample", order_index: 1 },
+      { credit_role: "stylist",      person: "samplesample", order_index: 1 },
+      { credit_role: "hair_makeup",  person: "samplesample", order_index: 1 },
+      { credit_role: "model",        person: "samplesample", order_index: 1 },
+    ],
+  },
+  {
+    id: "w15", title: "YUTASETOGAWA 2027SS",
+    type: "look_book", brand_id: null, brand: "YUTASETOGAWA", season: "2027SS", year: 2027,
+    tags: [],
+    is_published: true, featured: false, color: "#1E1E1C", accent: "#C0A070",
+    image_url: "images/YUTASETOGAWA_27ss.jpg",
+    credits: [
+      { credit_role: "photographer", person: "samplesample", order_index: 1 },
+      { credit_role: "stylist",      person: "samplesample", order_index: 1 },
+      { credit_role: "hair_makeup",  person: "samplesample", order_index: 1 },
+      { credit_role: "model",        person: "samplesample", order_index: 1 },
+    ],
+  },
+  {
     id: "w1", title: "2026AW LOOK BOOK",
     type: "look_book", brand_id: "b1", brand: "TOGA", season: "2026AW", year: 2026,
     tags: ["コンテンポラリー", "スタジオ撮影", "モノトーン"],

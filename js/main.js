@@ -26,7 +26,8 @@ function renderWorks() {
     return matchType && matchRole && matchQ;
   });
 
-  const limit = window.innerWidth <= 520 ? 8 : 9;
+  // Homepage teaser is one row (3-col grid) — the full list lives on works.html.
+  const limit = 3;
   grid.innerHTML = filtered.length === 0
     ? `<div class="no-results">No works found.</div>`
     : filtered.slice(0, limit).map(renderCard).join("");
