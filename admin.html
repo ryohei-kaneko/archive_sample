@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — CREDGE</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== HEADER (minimal — this page is unlinked from nav) ========== -->
+  <header id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">CREDGE</a>
+      <div class="header-actions">
+        <span style="font-size:11px; color:var(--text-muted); letter-spacing:0.06em;">ADMIN</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="admin-shell">
+
+      <h1 class="admin-title">登録用フォーム</h1>
+      <p class="admin-sub">
+        クリエーター・事務所の新規登録だけを行う内部ツールです。既存データの修正・削除はここではできません（必要な場合はコーディング担当まで）。<br>
+        登録は保存した瞬間にサイトへ反映されますが、トップページやCreators一覧はランダム表示のため、登録した本人がすぐそこに出てくるとは限りません。登録後に出るリンクからご本人のページを直接確認してください。
+      </p>
+
+      <!-- ========== LOGIN GATE ========== -->
+      <div id="admin-login-gate">
+        <div class="admin-field" style="max-width:320px;">
+          <label for="admin-password">パスワード</label>
+          <input type="password" id="admin-password" autocomplete="current-password">
+        </div>
+        <button type="button" id="admin-login-btn" class="btn-submit admin-submit">ログイン</button>
+        <div id="admin-login-status" class="admin-status"></div>
+      </div>
+
+      <!-- ========== MAIN (shown after login) ========== -->
+      <div id="admin-main" hidden>
+
+        <section class="admin-section">
+          <h2 class="admin-section-title">事務所を登録</h2>
+          <form id="agency-form">
+            <div class="admin-field">
+              <label for="agency-name">事務所名 *</label>
+              <input type="text" id="agency-name" required maxlength="120">
+            </div>
+            <div class="admin-field">
+              <label for="agency-type">タイプ *</label>
+              <select id="agency-type" required>
+                <option value="model">Model Agency</option>
+                <option value="creative">Creative Agency</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="agency-website">公式サイト</label>
+              <input type="url" id="agency-website" placeholder="https://...">
+            </div>
+            <div class="admin-field">
+              <label for="agency-instagram">Instagram URL</label>
+              <input type="url" id="agency-instagram" placeholder="https://www.instagram.com/...">
+            </div>
+            <button type="submit" class="btn-submit admin-submit">事務所を登録</button>
+            <div class="admin-status" data-status-for="agency-form"></div>
+          </form>
+          <ul class="admin-log" id="agency-log"></ul>
+        </section>
+
+        <section class="admin-section">
+          <h2 class="admin-section-title">クリエーターを登録</h2>
+          <form id="person-form">
+            <div class="admin-field">
+              <label for="person-name">氏名（日本語表記） *</label>
+              <input type="text" id="person-name" required maxlength="120">
+            </div>
+            <div class="admin-field">
+              <label for="person-name-en">氏名（英語表記） *</label>
+              <input type="text" id="person-name-en" required maxlength="120">
+            </div>
+            <div class="admin-field">
+              <label for="person-name-kana">氏名（ふりがな）</label>
+              <input type="text" id="person-name-kana" maxlength="120">
+            </div>
+            <div class="admin-field">
+              <label for="person-role">主な役割 *</label>
+              <select id="person-role" required>
+                <option value="model">Model</option>
+                <option value="photographer">Photographer</option>
+                <option value="stylist">Styling</option>
+                <option value="hair_makeup">Hair / Make</option>
+                <option value="actor">Actor</option>
+                <option value="dancer">Dancer</option>
+                <option value="kid">Kids</option>
+                <option value="illustrator">Illustrator</option>
+                <option value="director">Director</option>
+                <option value="videographer">Video Cam</option>
+                <option value="editor">Edit</option>
+                <option value="art_director">Art Dir.</option>
+                <option value="creative_director">CD</option>
+                <option value="casting">Casting</option>
+                <option value="producer">Producer</option>
+                <option value="set_designer">Set Design</option>
+                <option value="retoucher">Retouch</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="person-agency">所属事務所</label>
+              <select id="person-agency">
+                <option value="">— 未所属 / 直接依頼 —</option>
+              </select>
+              <div class="admin-hint" id="person-agency-hint">事務所一覧を読み込み中…</div>
+            </div>
+            <div class="admin-field">
+              <label for="person-gender">性別区分</label>
+              <select id="person-gender">
+                <option value="">— 未設定 —</option>
+                <option value="m">Men</option>
+                <option value="f">Women</option>
+                <option value="nb">Non-Binary</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="person-profile-image">プロフィール画像URL</label>
+              <input type="url" id="person-profile-image" placeholder="https://...">
+              <div class="admin-hint">画像権利がクリアになるまでサイト上には表示されません（データとしては保存されます）。</div>
+            </div>
+            <div class="admin-field">
+              <label for="person-instagram">Instagram URL</label>
+              <input type="url" id="person-instagram" placeholder="https://www.instagram.com/...">
+            </div>
+            <div class="admin-field">
+              <label for="person-composite">コンポジット / ポートフォリオページURL</label>
+              <input type="url" id="person-composite" placeholder="https://...">
+            </div>
+            <div class="admin-field">
+              <label>サイズ（cm・任意）</label>
+              <div class="admin-field-row">
+                <div class="admin-field">
+                  <label for="person-height">Height</label>
+                  <input type="number" id="person-height" min="100" max="230" step="0.5">
+                </div>
+                <div class="admin-field">
+                  <label for="person-bust">Bust</label>
+                  <input type="number" id="person-bust" min="0" max="200" step="0.5">
+                </div>
+                <div class="admin-field">
+                  <label for="person-waist">Waist</label>
+                  <input type="number" id="person-waist" min="0" max="200" step="0.5">
+                </div>
+                <div class="admin-field">
+                  <label for="person-hip">Hip</label>
+                  <input type="number" id="person-hip" min="0" max="200" step="0.5">
+                </div>
+                <div class="admin-field">
+                  <label for="person-shoe">Shoe</label>
+                  <input type="number" id="person-shoe" min="15" max="35" step="0.5">
+                </div>
+              </div>
+            </div>
+            <div class="admin-field">
+              <label for="person-tags">タグ（カンマ区切り、任意）</label>
+              <input type="text" id="person-tags" placeholder="メンズ, LOOKブック, エディトリアル">
+            </div>
+            <button type="submit" class="btn-submit admin-submit">クリエーターを登録</button>
+            <div class="admin-status" data-status-for="person-form"></div>
+          </form>
+          <ul class="admin-log" id="person-log"></ul>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
