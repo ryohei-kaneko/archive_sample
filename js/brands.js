@@ -3,7 +3,8 @@
    Requires: data.js
    =========================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   renderBrandsGrid();
   initHeaderScroll();
   initMobileMenu();

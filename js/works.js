@@ -3,7 +3,8 @@
    Requires: data.js
    =========================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   renderWorksGrid();
   initModal();
   initHeaderScroll();
@@ -15,28 +16,12 @@ function renderWorksGrid() {
   if (!grid) return;
 
   if (works.length === 0) {
-    grid.innerHTML = `<div class="no-results">No works found.</div>`;
+    grid.innerHTML = `<div class="no-results">No collections found.</div>`;
     return;
   }
 
-  grid.innerHTML = works.map(renderCard).join("");
-}
-
-function renderCard(w) {
-  const bg = w.image_url
-    ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
-    : `background: ${w.color};`;
-
-  return `
-    <article class="work-card" data-id="${w.id}">
-      <div class="card-photo" style="${bg}">
-        <div class="card-overlay">
-          <div class="card-overlay-brand">${w.brand || ""}</div>
-          <div class="card-overlay-title">${w.title}</div>
-        </div>
-      </div>
-    </article>
-  `;
+  grid.classList.toggle("work-list", !SHOW_MEDIA);
+  grid.innerHTML = works.map(renderWorkItemHTML).join("");
 }
 
 
@@ -48,7 +33,7 @@ function openModal(workId) {
   const imgEl  = document.getElementById("modal-img");
   const infoEl = document.getElementById("modal-info");
 
-  imgEl.style.cssText = w.image_url
+  imgEl.style.cssText = SHOW_MEDIA && w.image_url
     ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
     : `background: ${w.color};`;
 
@@ -91,8 +76,8 @@ function closeModal() {
 
 function initModal() {
   document.getElementById("works-grid")?.addEventListener("click", e => {
-    const card = e.target.closest(".work-card");
-    if (card) openModal(card.dataset.id);
+    const item = e.target.closest("[data-id]");
+    if (item) openModal(item.dataset.id);
   });
   document.getElementById("modal-backdrop")?.addEventListener("click", closeModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });

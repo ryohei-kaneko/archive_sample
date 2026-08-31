@@ -26,29 +26,14 @@ function renderWorks() {
     return matchType && matchRole && matchQ;
   });
 
+  grid.classList.toggle("work-list", !SHOW_MEDIA);
+
   // Homepage teaser is one row (3-col grid on desktop, 2-col on SP —
   // 4 items fills that as a clean 2x2). Full list lives on works.html.
   const limit = window.innerWidth <= 520 ? 4 : 3;
   grid.innerHTML = filtered.length === 0
-    ? `<div class="no-results">No works found.</div>`
-    : filtered.slice(0, limit).map(renderCard).join("");
-}
-
-function renderCard(w) {
-  const bg = w.image_url
-    ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
-    : `background: ${w.color};`;
-
-  return `
-    <article class="work-card" data-id="${w.id}">
-      <div class="card-photo" style="${bg}">
-        <div class="card-overlay">
-          <div class="card-overlay-brand">${w.brand || ""}</div>
-          <div class="card-overlay-title">${w.title}</div>
-        </div>
-      </div>
-    </article>
-  `;
+    ? `<div class="no-results">No collections found.</div>`
+    : filtered.slice(0, limit).map(renderWorkItemHTML).join("");
 }
 
 
@@ -60,7 +45,7 @@ function openModal(workId) {
   const imgEl  = document.getElementById("modal-img");
   const infoEl = document.getElementById("modal-info");
 
-  imgEl.style.cssText = w.image_url
+  imgEl.style.cssText = SHOW_MEDIA && w.image_url
     ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
     : `background: ${w.color};`;
 
@@ -103,8 +88,8 @@ function closeModal() {
 
 function initModal() {
   document.getElementById("works-grid")?.addEventListener("click", e => {
-    const card = e.target.closest(".work-card");
-    if (card) openModal(card.dataset.id);
+    const item = e.target.closest("[data-id]");
+    if (item) openModal(item.dataset.id);
   });
   document.getElementById("modal-backdrop")?.addEventListener("click", closeModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
@@ -120,14 +105,16 @@ function renderPeople() {
   const limit = window.innerWidth <= 520 ? 8 : 15;
   const shuffled = [...people].sort(() => Math.random() - 0.5);
   grid.innerHTML = shuffled.slice(0, limit).map(p => {
-    const avatarInner = p.profile_image
-      ? `<img src="${p.profile_image}" alt="${p.name}">`
-      : p.name.slice(0, 1);
+    // Text-only mode drops the avatar circle entirely (not just the photo
+    // inside it) — flip SHOW_MEDIA back on to restore it.
+    const avatarHTML = SHOW_MEDIA
+      ? `<div class="person-row-avatar" style="${p.profile_image ? "" : `background:${p.color};`}">
+           ${p.profile_image ? `<img src="${p.profile_image}" alt="${p.name}">` : p.name.slice(0, 1)}
+         </div>`
+      : "";
     return `
       <a class="person-row" href="person.html?id=${p.id}">
-        <div class="person-row-avatar" style="${p.profile_image ? "" : `background:${p.color};`}">
-          ${avatarInner}
-        </div>
+        ${avatarHTML}
         <div class="person-row-info">
           <div class="person-row-name">${p.name_en.toUpperCase()}</div>
           <div class="person-row-sub">${p.name} &nbsp;·&nbsp; ${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
@@ -325,7 +312,7 @@ function renderSearchResults(q, container) {
   }
 
   if (matchedWorks.length > 0) {
-    html += `<div class="search-group-label">Works</div>`;
+    html += `<div class="search-group-label">Collections</div>`;
     html += matchedWorks.slice(0, 6).map(w => `
       <a class="search-result-item search-result-work" data-id="${w.id}" href="#">
         <div class="search-result-name">${w.title}</div>
@@ -378,7 +365,8 @@ function initHeaderScroll() {
 
 
 // ── Init ──
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   renderWorks();
   renderPeople();
   renderBrands();

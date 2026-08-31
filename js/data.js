@@ -3,6 +3,20 @@
    Used by: main.js, person.js
    =========================== */
 
+// Launch config: image rights are still being cleared with each outlet/
+// agency, so the site ships text-only for now. All profile_image/image_url
+// data stays in place untouched — flip this back to true the moment images
+// are cleared to restore every photo across the site at once.
+//
+// This isn't just a "hide the <img>" switch: works/creators grids are laid
+// out as editorial text lists while SHOW_MEDIA is false (see
+// renderWorkItemHTML / renderPersonItemHTML below and the "TEXT-ONLY MODE"
+// block in style.css), and swap back to the photo-card grids the moment
+// this flips to true. Mirrored onto <html data-media> so CSS can key off
+// it too (see the modal rules in style.css).
+const SHOW_MEDIA = false;
+document.documentElement.setAttribute("data-media", SHOW_MEDIA ? "on" : "off");
+
 const ROLE_LABEL = {
   photographer:       "Photographer",
   model:              "Model",
@@ -140,37 +154,68 @@ const agencies = [
   { id: "a-donna",    name: "DONNA MODELS",    type: "model", website: "http://www.donnamodels.jp/", instagram_url: "https://www.instagram.com/donnamodels.jp/" },
   { id: "a-image",    name: "Bon Image",       type: "model", website: "https://www.image-tokyo.co.jp/", instagram_url: null },
   { id: "a-tomorrow", name: "TOMORROW TOKYO",  type: "model", website: "https://www.tomorrowtokyo.com/", instagram_url: "https://www.instagram.com/tomorrow_tokyo/" },
+  { id: "a-bravo",    name: "BRAVO MODELS",    type: "model", website: "https://www.bravomodels.net/", instagram_url: "https://www.instagram.com/bravomodelstokyo/" },
+  { id: "a-stanford", name: "STANFORD",        type: "model", website: "https://www.stanford-group.com/", instagram_url: "https://www.instagram.com/stanford.group.jp/" },
+  { id: "a-satoru",   name: "SATORU JAPAN",    type: "model", website: "https://satorujapan.co.jp/", instagram_url: "https://www.instagram.com/satorujapan_official/" },
+  { id: "a-ipsilon",  name: "IPSILON",         type: "model", website: "https://www.ipsilon-japan.com/", instagram_url: "https://www.instagram.com/ipsilon.models/" },
+  { id: "a-pump",     name: "PUMP",            type: "model", website: "https://pumpmgmt.tokyo/", instagram_url: "https://www.instagram.com/pump_mgmt_tokyo/" },
+  { id: "a-bazooka",  name: "BAZOOKA",         type: "model", website: "https://bazookamgmt.com/", instagram_url: "https://www.instagram.com/bazooka_mgmt/" },
+  { id: "a-2plus1",   name: "2plus1",          type: "model", website: "https://www.twoplusoneagency.com/", instagram_url: "https://www.instagram.com/2plus1agency/" },
+  { id: "a-cdu",      name: "CDU",             type: "model", website: "http://www.cdumodels.com/", instagram_url: "https://www.instagram.com/cdumodels/" },
+  { id: "a-moment",   name: "MOMENT",          type: "model", website: "https://www.moment-mgmt.com/", instagram_url: "https://www.instagram.com/moment_mgmt/" },
+  { id: "a-west",     name: "WEST MANAGEMENT", type: "model", website: "http://west-management.jp/", instagram_url: "https://www.instagram.com/west_management_inc_official/" },
+  { id: "a-hellotokyo", name: "HELLO TOKYO",   type: "model", website: "https://hello-tokyo.co.jp/", instagram_url: "https://www.instagram.com/hellotokyo_2025/" },
+  { id: "a-own",      name: "OWN MODELS",      type: "model", website: "https://own-models.jp/", instagram_url: "https://www.instagram.com/own_models.jp/" },
+  { id: "a-velbed",   name: "VELBED",          type: "model", website: "https://www.velbed.jp/", instagram_url: "https://www.instagram.com/velbed.models/" },
+  { id: "a-holder",   name: "HOLDER",          type: "model", website: "https://holderworks.jp/", instagram_url: "https://www.instagram.com/holder_mgmt/" },
+  { id: "a-friday",   name: "FRIDAY",          type: "model", website: "https://fridayfarm.net/", instagram_url: "https://www.instagram.com/model_agency_friday/" },
+  { id: "a-grandmarque", name: "GRAND MARQUE TOKYO", type: "model", website: "https://grandmarquetokyo.jp/", instagram_url: "https://www.instagram.com/grandmarquetokyo/" },
+  { id: "a-exiles",   name: "EXILES",          type: "model", website: "https://exilesmodels.com/", instagram_url: "https://www.instagram.com/exilesmodels/" },
+  { id: "a-noi",      name: "Agency NOI",      type: "model", website: "https://www.agency-noi.com/", instagram_url: "https://www.instagram.com/agency.noi/" },
+  { id: "a-aube",     name: "AUBE MODELS",     type: "model", website: "https://aube-mgmt.com/", instagram_url: "https://www.instagram.com/aube_mgmt/" },
+  { id: "a-stage",    name: "STAGE TOKYO",     type: "model", website: "https://stage-models.com/", instagram_url: "https://www.instagram.com/stagemodels/" },
+  { id: "a-lotus",    name: "The Lotus Management", type: "model", website: "http://thelotusmodels.com/", instagram_url: "https://www.instagram.com/thelotusmanagement/" },
+  { id: "a-domo",     name: "DOMO",            type: "model", website: "https://domotokyo.com/", instagram_url: "https://www.instagram.com/domo_tokyo/" },
+  { id: "a-heads",    name: "HEADS",           type: "model", website: "https://www.heads-japan.com/", instagram_url: "https://www.instagram.com/heads_corporation/" },
+  { id: "a-indigo",   name: "INDIGO",          type: "model", website: "https://indigo012.com/", instagram_url: "https://www.instagram.com/indigomodels/" },
+  { id: "a-puhato",   name: "PUHATO",          type: "model", website: "https://puhato.com/", instagram_url: null },
+  { id: "a-pomme",    name: "pomme management", type: "model", website: "https://www.pommemanagement.com/", instagram_url: "https://www.instagram.com/pomme_management/" },
+  { id: "a-enpara",   name: "En Para",         type: "model", website: "https://enpara.jp/", instagram_url: "https://www.instagram.com/enpara.jp/" },
+  { id: "a-mille",    name: "mille management", type: "model", website: "http://www.millemanagement.com/", instagram_url: null },
+  { id: "a-luuna",    name: "luuna management", type: "model", website: "https://luuna-management.com/", instagram_url: "https://www.instagram.com/luuna_management/" },
+  { id: "a-light",    name: "LIGHT management", type: "model", website: "https://lightmodels.net/", instagram_url: "https://www.instagram.com/lightmanagement_official/" },
+  { id: "a-aldente",  name: "AL DENTE",        type: "model", website: "https://aldente-mgmt.com/", instagram_url: "https://www.instagram.com/aldente_management/" },
 ];
 
 // Rakuten Fashion Week Tokyo 2027SS 参加ブランド
 // instagram_url は各ブランドの website (Rakuten Fashion Week 掲載ページ) に
 // 記載があったもののみ設定。記載が無いブランドは null。
 const brands = [
-  { id: "b-yoshio-kubo",            name: "yoshiokubo",             website: "https://rakutenfashionweektokyo.com/jp/brands/detail/yoshio-kubo/",            instagram_url: "https://www.instagram.com/yoshiokubo_official/" },
-  { id: "b-seivson",                name: "Seivson",                website: "https://rakutenfashionweektokyo.com/jp/brands/detail/seivson/",                instagram_url: "https://www.instagram.com/seivson.official/" },
-  { id: "b-whitenook",              name: "WHiTENOOK",              website: "https://rakutenfashionweektokyo.com/jp/brands/detail/whitenook/",              instagram_url: null },
-  { id: "b-enfold",                 name: "ENFÖLD",                 website: "https://rakutenfashionweektokyo.com/jp/brands/detail/enfold/",                 instagram_url: "https://www.instagram.com/enfold_official/" },
-  { id: "b-support-surface",        name: "support surface",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/support-surface/",        instagram_url: "https://www.instagram.com/supportsurfaceofficial/" },
-  { id: "b-mitsuru-okazaki",        name: "MITSURU OKAZAKI",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/mitsuru-okazaki/",        instagram_url: "https://www.instagram.com/mitsuruokazaki_design_lab/" },
-  { id: "b-megmiura-wardrobe",      name: "MEGMIURA WARDROBE",      website: "https://rakutenfashionweektokyo.com/jp/brands/detail/megmiura-wardrobe/",      instagram_url: "https://www.instagram.com/megmiura_wardrobe/" },
-  { id: "b-eitaro",                 name: "EITARO",                 website: "https://rakutenfashionweektokyo.com/jp/brands/detail/eitaro/",                 instagram_url: "https://www.instagram.com/eitaro.official/" },
-  { id: "b-keiko-nishiyama",        name: "KEIKO NISHIYAMA",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/keiko-nishiyama/",        instagram_url: "https://www.instagram.com/keikonishiyama/" },
-  { id: "b-pillings",               name: "pillings",               website: "https://rakutenfashionweektokyo.com/jp/brands/detail/pillings/",               instagram_url: "https://www.instagram.com/pillings_/" },
-  { id: "b-kakan",                  name: "KAN KAN",                website: "https://rakutenfashionweektokyo.com/jp/brands/detail/kakan/",                  instagram_url: "https://www.instagram.com/kakan.ars/" },
-  { id: "b-yushokobayashi",         name: "yushokobayashi",         website: "https://rakutenfashionweektokyo.com/jp/brands/detail/yushokobayashi/",         instagram_url: "https://www.instagram.com/yushokobayashi/" },
-  { id: "b-requal",                 name: "RequaL≡",                website: "https://rakutenfashionweektokyo.com/jp/brands/detail/requal/",                 instagram_url: "https://www.instagram.com/re_qual_/" },
-  { id: "b-mizen",                  name: "MIZEN",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/mizen/",                  instagram_url: "https://www.instagram.com/mizenofficial/" },
-  { id: "b-haute-mode-hirata",      name: "Haute Mode Hirata",      website: "https://rakutenfashionweektokyo.com/jp/brands/detail/haute-mode-hirata/",      instagram_url: "https://www.instagram.com/haute_mode_hirata/" },
-  { id: "b-c-jean",                 name: "C JEAN",                 website: "https://rakutenfashionweektokyo.com/jp/brands/detail/c-jean/",                 instagram_url: "https://www.instagram.com/cjean_official/" },
-  { id: "b-charinyeh",              name: "CHARINYEH",              website: "https://rakutenfashionweektokyo.com/jp/brands/detail/charinyeh/",              instagram_url: "https://www.instagram.com/charinyeh/" },
-  { id: "b-sonia-carrasco",         name: "SONIA CARRASCO",         website: "https://rakutenfashionweektokyo.com/jp/brands/detail/sonia-carrasco/",         instagram_url: "https://www.instagram.com/soniacarrascoofficial/" },
-  { id: "b-anthony-calydon",        name: "ANTHONY CALYDON",        website: "https://rakutenfashionweektokyo.com/jp/brands/detail/anthony-calydon/",        instagram_url: null },
-  { id: "b-wisharawish",            name: "WISHARAWISH",            website: "https://rakutenfashionweektokyo.com/jp/brands/detail/wisharawish/",            instagram_url: "https://www.instagram.com/wisharawish_official/" },
-  { id: "b-anna-choi",              name: "ANNA CHOI",              website: "https://rakutenfashionweektokyo.com/jp/brands/detail/anna-choi/",              instagram_url: "https://www.instagram.com/maisonannachoi/" },
-  { id: "b-yukihero-pro-wrestling", name: "YUKIHERO PRO-WRESTLING", website: "https://rakutenfashionweektokyo.com/jp/brands/detail/yukihero-pro-wrestling/", instagram_url: "https://www.instagram.com/yukihero_prowrestling/" },
-  { id: "b-orimi",                  name: "ORIMI",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/orimi/",                  instagram_url: "https://www.instagram.com/orimi.official/" },
-  { id: "b-khoki",                  name: "KHOKI",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/khoki/",                  instagram_url: "https://www.instagram.com/khoki146/" },
-  { id: "b-kudos-soduk",            name: "soduk",                  website: "https://rakutenfashionweektokyo.com/jp/brands/detail/kudos-soduk/",            instagram_url: "https://www.instagram.com/soduk_official/" },
+  { id: "b-yoshio-kubo",            name: "yoshiokubo",             designer: "久保 嘉男 Yoshio Kubo", website: "https://yoshiokubo.jp/",            instagram_url: "https://www.instagram.com/yoshiokubo_official/" },
+  { id: "b-seivson",                name: "Seivson",                website: "https://seivson.jp/",                instagram_url: "https://www.instagram.com/seivson.official/" },
+  { id: "b-whitenook",              name: "WHiTENOOK",              website: null,                instagram_url: "https://www.instagram.com/whitenook_official/" },
+  { id: "b-enfold",                 name: "ENFÖLD",                 website: "https://www.enfold.jp/",                 instagram_url: "https://www.instagram.com/enfold_official/" },
+  { id: "b-support-surface",        name: "support surface",        website: "https://www.supportsurface.jp/",        instagram_url: "https://www.instagram.com/supportsurfaceofficial/" },
+  { id: "b-mitsuru-okazaki",        name: "MITSURU OKAZAKI",        website: "https://www.mitsuruokazaki.com/",        instagram_url: "https://www.instagram.com/mitsuruokazaki_design_lab/" },
+  { id: "b-megmiura-wardrobe",      name: "MEGMIURA WARDROBE",      website: "https://www.megmiura.store/",      instagram_url: "https://www.instagram.com/megmiura_wardrobe/" },
+  { id: "b-eitaro",                 name: "EITARO",                 website: null,                 instagram_url: "https://www.instagram.com/eitaro.official/" },
+  { id: "b-keiko-nishiyama",        name: "KEIKO NISHIYAMA",        website: "https://ja.keikonishiyama.jp/",        instagram_url: "https://www.instagram.com/keikonishiyama/" },
+  { id: "b-pillings",               name: "pillings",               website: null,               instagram_url: "https://www.instagram.com/pillings_/" },
+  { id: "b-kakan",                  name: "KAKAN",                  website: "https://kakanars.com/",                 instagram_url: "https://www.instagram.com/kakan.ars/" },
+  { id: "b-yushokobayashi",         name: "yushokobayashi",         website: null,         instagram_url: "https://www.instagram.com/yushokobayashi/" },
+  { id: "b-requal",                 name: "RequaL≡",                website: null,                 instagram_url: "https://www.instagram.com/re_qual_/" },
+  { id: "b-mizen",                  name: "MIZEN",                  website: "https://mizenproject.co.jp/",                  instagram_url: "https://www.instagram.com/mizenofficial/" },
+  { id: "b-haute-mode-hirata",      name: "Haute Mode Hirata",      website: "https://hautemodehirata.com/",      instagram_url: "https://www.instagram.com/haute_mode_hirata/" },
+  { id: "b-c-jean",                 name: "C JEAN",                 website: "https://www.cjean.co/",                 instagram_url: "https://www.instagram.com/cjean_official/" },
+  { id: "b-charinyeh",              name: "CHARINYEH",              website: "https://charinyeh.com/",              instagram_url: "https://www.instagram.com/charinyeh/" },
+  { id: "b-sonia-carrasco",         name: "SONIA CARRASCO",         website: "https://sonia-carrasco.com/",         instagram_url: "https://www.instagram.com/soniacarrascoofficial/" },
+  { id: "b-anthony-calydon",        name: "ANTHONY CALYDON",        website: null,        instagram_url: null },
+  { id: "b-wisharawish",            name: "WISHARAWISH",            website: "https://wisharawish.com/",            instagram_url: "https://www.instagram.com/wisharawish_official/" },
+  { id: "b-anna-choi",              name: "ANNA CHOI",              website: "https://www.maisonannachoi.com/",              instagram_url: "https://www.instagram.com/maisonannachoi/" },
+  { id: "b-yukihero-pro-wrestling", name: "YUKIHERO PRO-WRESTLING", website: "https://yukihe-ro.jp/", instagram_url: "https://www.instagram.com/yukihero_prowrestling/" },
+  { id: "b-orimi",                  name: "ORIMI",                  website: "https://orimi-k.com/",                  instagram_url: "https://www.instagram.com/orimi.official/" },
+  { id: "b-khoki",                  name: "KHOKI",                  website: null,                  instagram_url: "https://www.instagram.com/khoki146/" },
+  { id: "b-kudos-soduk",            name: "soduk",                  website: "https://soduk.co/",            instagram_url: "https://www.instagram.com/soduk_official/" },
 ];
 
 const people = [
@@ -5740,7 +5785,7 @@ const people = [
     gender: "m", color: "#1A2028", is_verified: true,
   },
   {
-    id: "p-sion",
+    id: "p-sion-2",
     name: "シオン", name_en: "Sion",
     primary_role: "model", roles: ["model"],
     agency_id: "a-image",
@@ -5764,7 +5809,7 @@ const people = [
     gender: "m", color: "#1A2028", is_verified: true,
   },
   {
-    id: "p-kaz",
+    id: "p-kaz-2",
     name: "カズ", name_en: "Kaz",
     primary_role: "model", roles: ["model"],
     agency_id: "a-image",
@@ -6749,6 +6794,35 @@ const works = [
   },
 ];
 
+// ── Live data (optional, additive) ──
+// Phase 1 of the self-service "mypage" plan
+// (/Users/admin/.claude/plans/splendid-chasing-hellman.md): once this site
+// is deployed on Cloudflare Pages with the D1 database provisioned,
+// GET /api/data becomes available and this overwrites the four arrays
+// above *in place* with the live D1-backed data, before any page's own
+// script runs — so once self-editing ships in a later phase, edits reflect
+// immediately with no redeploy. Until then (viewing the site locally, or
+// before the operator finishes the Cloudflare setup — see wrangler.toml),
+// the fetch simply fails/404s and the hardcoded arrays above keep working
+// exactly as they do today. Purely additive — zero risk to the site as it
+// exists right now.
+window.CREDGE_READY = (async function loadLiveData() {
+  try {
+    const res = await fetch("/api/data", { cache: "no-store" });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (json.agencies) { agencies.length = 0; agencies.push(...json.agencies); }
+    if (json.brands)   { brands.length = 0;   brands.push(...json.brands); }
+    if (json.people)   { people.length = 0;   people.push(...json.people); }
+    if (json.works)    { works.length = 0;    works.push(...json.works); }
+  } catch (err) {
+    // No live backend deployed yet (or offline) — not an error, the
+    // hardcoded arrays above are the intended fallback.
+    console.debug("[CREDGE] live data unavailable, using built-in data:", err.message);
+  }
+})();
+
+
 // ── Shared helpers ──
 
 function groupCredits(credits) {
@@ -6785,4 +6859,80 @@ function buildCreditNameHTML(name, linkPrefix) {
     : "";
 
   return `<a class="credit-name credit-link" href="${linkPrefix}person.html?id=${match.id}">${name}</a>${agencyBadge}`;
+}
+
+
+// ── Work / Creator item renderers ──
+// One render path per item, branching on SHOW_MEDIA, used by every page
+// that lists works or creators (main.js, works.js, creators.js, agency.js,
+// brand.js, person.js). Keeping both layouts in one place means flipping
+// SHOW_MEDIA is the only thing that has to change to switch every page
+// between the text-only list view and the photo-card grid view.
+
+function renderWorkCardHTML(w) {
+  const bg = w.image_url
+    ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
+    : `background: ${w.color};`;
+  return `
+    <article class="work-card" data-id="${w.id}">
+      <div class="card-photo" style="${bg}">
+        <div class="card-overlay">
+          <div class="card-overlay-brand">${w.brand || ""}</div>
+          <div class="card-overlay-title">${w.title}</div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderWorkListRowHTML(w) {
+  return `
+    <article class="work-list-row" data-id="${w.id}">
+      <div class="work-list-info">
+        <div class="work-list-title">${w.title}</div>
+        <div class="work-list-sub">${w.brand || "—"}${w.season ? ` · ${w.season}` : ""}</div>
+      </div>
+      <div class="work-list-arrow">›</div>
+    </article>
+  `;
+}
+
+function renderWorkItemHTML(w) {
+  return SHOW_MEDIA ? renderWorkCardHTML(w) : renderWorkListRowHTML(w);
+}
+
+// agencyName is optional — pass it wherever the surrounding page doesn't
+// already make the agency obvious (e.g. the global Creators index).
+function renderPersonItemHTML(p, agencyName) {
+  if (SHOW_MEDIA) {
+    const imgContent = p.profile_image
+      ? `<img src="${p.profile_image}" alt="${p.name_en}" loading="lazy">`
+      : "";
+    const bgStyle = p.profile_image ? "" : `background: ${p.color};`;
+    return `
+      <a class="creator-card" href="person.html?id=${p.id}">
+        <div class="creator-card-img" style="${bgStyle}">${imgContent}</div>
+        <div class="creator-card-overlay">
+          <div class="creator-card-name">${p.name_en}</div>
+          ${p.name !== p.name_en ? `<div class="creator-card-sub">${p.name}</div>` : ""}
+          <div class="creator-card-role">${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
+          ${agencyName ? `<div class="creator-card-agency">${agencyName}</div>` : ""}
+        </div>
+      </a>
+    `;
+  }
+
+  const subParts = [];
+  if (p.name !== p.name_en) subParts.push(p.name);
+  subParts.push(ROLE_LABEL[p.primary_role] || p.primary_role);
+  if (agencyName) subParts.push(agencyName);
+
+  return `
+    <a class="person-row" href="person.html?id=${p.id}">
+      <div class="person-row-info">
+        <div class="person-row-name">${p.name_en.toUpperCase()}</div>
+        <div class="person-row-sub">${subParts.join(" · ")}</div>
+      </div>
+    </a>
+  `;
 }

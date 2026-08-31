@@ -1177,6 +1177,14 @@ a.person-card {
   color: var(--text-muted);
 }
 
+/* Brand detail page: Designer / Concept / Official Website fields */
+.brand-field { margin-top: 28px; max-width: 640px; }
+.brand-field .person-agency-label { display: block; margin-bottom: 8px; }
+.brand-field-value {
+  font-size: 14px;
+  color: var(--text);
+}
+
 .btn-booking {
   display: inline-block;
   font-size: 11px;
@@ -1680,8 +1688,10 @@ a.agency-row:hover { opacity: 0.65; }
 }
 
 /* Creators page keeps growing, so it gets an extra column over the
-   shared 4-col default (used as-is by the Agency roster). */
-#creators-grid {
+   shared 4-col default (used as-is by the Agency roster). Scoped to
+   .creators-grid so it only applies in photo-card (SHOW_MEDIA) mode —
+   text-only mode uses .people-list instead, see TEXT-ONLY MODE below. */
+#creators-grid.creators-grid {
   grid-template-columns: repeat(5, 1fr);
 }
 
@@ -1776,10 +1786,88 @@ a.agency-row:hover { opacity: 0.65; }
 }
 
 @media (max-width: 800px) {
-  .creators-grid, #creators-grid { grid-template-columns: repeat(3, 1fr); }
+  .creators-grid, #creators-grid.creators-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 520px) {
-  .creators-grid, #creators-grid { grid-template-columns: repeat(2, 1fr); }
+  .creators-grid, #creators-grid.creators-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+
+/* ===========================
+   TEXT-ONLY MODE (SHOW_MEDIA = false)
+   Works and Creators render as editorial list rows instead of photo-card
+   grids — see renderWorkItemHTML / renderPersonItemHTML in data.js.
+   Flipping SHOW_MEDIA back to true stops these classes from being applied
+   at all, restoring the grids above untouched.
+   =========================== */
+
+/* Works: list row (replaces .work-card / #works-grid's photo grid) */
+#works-grid.work-list,
+#person-works-grid.work-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.work-list-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: opacity var(--ease);
+}
+.work-list-row:hover { opacity: 0.55; }
+.work-list-row:first-child { border-top: 1px solid var(--border-light); }
+
+.work-list-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+.work-list-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+.work-list-arrow {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Creators: list of .person-row items (replaces .creator-card grid) —
+   reuses the same row component as the homepage Creators section. */
+.people-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 48px;
+}
+@media (max-width: 1100px) {
+  .people-list { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 800px) {
+  .people-list { grid-template-columns: repeat(2, 1fr); column-gap: 24px; }
+}
+@media (max-width: 520px) {
+  .people-list { grid-template-columns: 1fr; }
+}
+
+/* Modal: text-only mode drops the color-swatch panel and gives the
+   credit sheet the full width. */
+html[data-media="off"] .modal-panel { grid-template-columns: 1fr; }
+html[data-media="off"] #modal-img { display: none; }
+
+/* Person profile: text-only mode drops the avatar circle too (see
+   person.js), so the info column takes the full width instead of
+   leaving an empty 220px gap where the photo/avatar used to sit. */
+html[data-media="off"] .person-profile-inner {
+  grid-template-columns: 1fr;
+  max-width: 480px;
 }
 
 /* ===========================
@@ -1788,14 +1876,21 @@ a.agency-row:hover { opacity: 0.65; }
 #footer {
   margin-top: 0;
   border-top: 1px solid var(--border);
-  padding: 48px 0 32px;
+  padding: 20px 0;
 }
 
 .footer-inner {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 40px;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Logo + nav links share the left side of the single footer row. */
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
 }
 
 .footer-logo {
@@ -1812,7 +1907,7 @@ a.agency-row:hover { opacity: 0.65; }
 
 .footer-links {
   display: flex;
-  gap: 24px;
+  gap: 20px;
 }
 .footer-links a {
   font-size: 12px;
@@ -1824,10 +1919,7 @@ a.agency-row:hover { opacity: 0.65; }
 .footer-copy {
   font-size: 11px;
   color: var(--text-muted);
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-light);
-  text-align: center;
+  flex-shrink: 0;
 }
 
 
@@ -1918,7 +2010,8 @@ a.agency-row:hover { opacity: 0.65; }
 
   #about-section > .container > div { grid-template-columns: 1fr !important; }
 
-  .footer-inner { flex-direction: column; gap: 24px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .footer-left { flex-wrap: wrap; row-gap: 10px; }
   .footer-links { flex-wrap: wrap; gap: 16px; }
 }
 
@@ -1973,10 +2066,113 @@ a.agency-row:hover { opacity: 0.65; }
 .legal-note {
   font-size: 12px;
   color: var(--accent);
-  background: var(--accent-bg);
-  padding: 10px 14px;
-  border-radius: var(--radius);
 }
+
+
+/* ===========================
+   ADMIN CMS (internal, unlinked from nav — admin.html)
+   =========================== */
+.admin-shell {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+.admin-title {
+  font-size: clamp(22px, 4vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.admin-sub {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.admin-section {
+  margin-top: 48px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-light);
+}
+.admin-section:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+.admin-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+
+.admin-field { margin-bottom: 16px; }
+.admin-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.admin-field input[type="text"],
+.admin-field input[type="url"],
+.admin-field input[type="password"],
+.admin-field input[type="number"],
+.admin-field select,
+.admin-field textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color var(--ease);
+}
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus { border-color: var(--accent); outline: none; }
+.admin-field textarea { resize: vertical; min-height: 60px; }
+
+.admin-field-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.admin-field-row .admin-field { margin-bottom: 0; }
+@media (max-width: 520px) {
+  .admin-field-row { grid-template-columns: repeat(3, 1fr); row-gap: 12px; }
+}
+
+.admin-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.admin-submit {
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  margin-top: 4px;
+}
+
+.admin-status {
+  font-size: 12px;
+  margin-top: 10px;
+  min-height: 1em;
+}
+.admin-status--ok { color: #3F6B4E; }
+.admin-status--error { color: #A0453A; }
+
+.admin-log {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  max-height: 160px;
+  overflow-y: auto;
+}
+.admin-log li { padding: 5px 0; border-bottom: 1px solid var(--border-light); }
+.admin-log:empty { display: none; }
 
 
 /* ===========================

@@ -26,7 +26,8 @@ const ROLE_FILTER_ROLES = {
 
 const CREATORS_ORDER_KEY = "credge_creators_order";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   const saved = sessionStorage.getItem(CREATORS_ORDER_KEY);
 
   if (saved) {
@@ -169,27 +170,10 @@ function renderCreatorsGrid() {
     });
   }
 
-  grid.className = "creators-grid";
+  grid.className = SHOW_MEDIA ? "creators-grid" : "people-list";
   grid.innerHTML = filtered.map(p => {
-    const imgContent = p.profile_image
-      ? `<img src="${p.profile_image}" alt="${p.name_en}" loading="lazy">`
-      : "";
-    const bgStyle = p.profile_image ? "" : `background: ${p.color};`;
-
     const agency = p.agency_id ? agencies.find(a => a.id === p.agency_id) : null;
-    const agencyName = agency ? agency.name : "";
-
-    return `
-      <a class="creator-card" href="person.html?id=${p.id}">
-        <div class="creator-card-img" style="${bgStyle}">${imgContent}</div>
-        <div class="creator-card-overlay">
-          <div class="creator-card-name">${p.name_en}</div>
-          ${p.name !== p.name_en ? `<div class="creator-card-sub">${p.name}</div>` : ""}
-          <div class="creator-card-role">${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
-          ${agencyName ? `<div class="creator-card-agency">${agencyName}</div>` : ""}
-        </div>
-      </a>
-    `;
+    return renderPersonItemHTML(p, agency ? agency.name : "");
   }).join("");
 }
 

@@ -3,7 +3,8 @@
    Requires: data.js
    =========================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   const params = new URLSearchParams(window.location.search);
   const id     = params.get("id");
   const person = people.find(p => p.id === id);
@@ -31,7 +32,10 @@ function renderPersonHeader(person, agency, workCount) {
   const el = document.getElementById("person-header");
   if (!el) return;
 
-  const photoHTML = person.profile_image
+  // Text-only mode drops the avatar circle entirely, not just the photo
+  // inside it — .person-profile-inner collapses to one column for this
+  // via the html[data-media="off"] rule in style.css.
+  const photoHTML = !SHOW_MEDIA ? "" : person.profile_image
     ? `<img class="person-profile-photo" src="${person.profile_image}" alt="${person.name}">`
     : `<div class="person-avatar-xl" style="background:${person.color}">
          ${person.name.slice(0, 1)}
@@ -111,19 +115,21 @@ function renderPersonWorks(personWorks, personName) {
   const grid = document.getElementById("person-works-grid");
   if (!grid) return;
 
-  grid.className = "person-works-list";
+  grid.className = SHOW_MEDIA ? "person-works-list" : "work-list";
   if (personWorks.length === 0) {
-    grid.innerHTML = `<div class="no-results">No works found.</div>`;
+    grid.innerHTML = `<div class="no-results">No collections found.</div>`;
     return;
   }
   grid.innerHTML = personWorks.map(w => renderPersonWorkRow(w)).join("");
-  grid.querySelectorAll(".work-row").forEach(el => {
+  grid.querySelectorAll("[data-id]").forEach(el => {
     el.addEventListener("click", () => openCreditsModal(el.dataset.id));
   });
 }
 
 
 function renderPersonWorkRow(w) {
+  if (!SHOW_MEDIA) return renderWorkListRowHTML(w);
+
   const thumb = w.image_url
     ? `<img src="${w.image_url}" alt="${w.title}" class="work-row-thumb">`
     : `<div class="work-row-thumb work-row-thumb--color" style="background:${w.color};"></div>`;

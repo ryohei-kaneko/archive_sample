@@ -3,7 +3,8 @@
    Requires: data.js
    =========================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   const params = new URLSearchParams(window.location.search);
   const id     = params.get("id");
   const brand  = brands.find(b => b.id === id);
@@ -30,30 +31,48 @@ function renderBrandHeader(brand, worksCount) {
   const el = document.getElementById("brand-header");
   if (!el) return;
 
-  const hasWebsite   = brand.website && brand.website !== "#";
+  // Rakuten Fashion Week's own brand-detail page isn't the brand's
+  // official site — treat it the same as "no website" so the field only
+  // ever shows a genuine brand URL (falls back to the Instagram icon).
+  const hasWebsite   = brand.website && brand.website !== "#" &&
+    !brand.website.includes("rakutenfashionweektokyo.com");
   const hasInstagram = !!brand.instagram_url;
+  const websiteLabel = hasWebsite
+    ? brand.website.replace(/^https?:\/\//, "").replace(/\/$/, "")
+    : "";
 
   el.innerHTML = `
     <div class="agency-profile-inner">
       <div class="agency-profile-info">
         <h1 class="person-profile-name" style="font-size:clamp(20px,4vw,32px);">${brand.name}</h1>
-        <div class="agency-profile-meta">${worksCount} Works</div>
-        ${hasWebsite || hasInstagram
-          ? `<div class="agency-links">
-               ${hasWebsite
-                 ? `<a class="agency-website-link" href="${brand.website}" target="_blank" rel="noopener">Website</a>`
-                 : ""}
-               ${hasInstagram
-                 ? `<a class="agency-insta-link" href="${brand.instagram_url}" target="_blank" rel="noopener" aria-label="Instagram">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                        <circle cx="12" cy="12" r="4"/>
-                        <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
-                      </svg>
-                    </a>`
-                 : ""}
-             </div>`
-          : ""}
+
+        ${brand.designer ? `
+          <div class="brand-field">
+            <div class="person-agency-label">Designer</div>
+            <div class="brand-field-value">${brand.designer}</div>
+          </div>
+        ` : ""}
+
+        ${hasWebsite ? `
+          <div class="brand-field">
+            <div class="person-agency-label">Official Website</div>
+            <a class="agency-website-link" href="${brand.website}" target="_blank" rel="noopener">${websiteLabel}</a>
+          </div>
+        ` : ""}
+
+        ${worksCount > 0 ? `<div class="agency-profile-meta">${worksCount} Collections</div>` : ""}
+
+        ${hasInstagram ? `
+          <div class="agency-links">
+            <a class="agency-insta-link" href="${brand.instagram_url}" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+          </div>
+        ` : ""}
       </div>
     </div>
   `;
@@ -65,26 +84,13 @@ function renderBrandWorks(brandWorks) {
   if (!grid) return;
 
   if (brandWorks.length === 0) {
-    grid.innerHTML = `<div class="no-results">No works found.</div>`;
+    grid.innerHTML = `<div class="no-results">No collections found.</div>`;
     return;
   }
 
   grid.id = "works-grid";
-  grid.innerHTML = brandWorks.map(w => {
-    const bg = w.image_url
-      ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
-      : `background: ${w.color};`;
-    return `
-      <article class="work-card" data-id="${w.id}">
-        <div class="card-photo" style="${bg}">
-          <div class="card-overlay">
-            <div class="card-overlay-brand">${w.brand || ""}</div>
-            <div class="card-overlay-title">${w.title}</div>
-          </div>
-        </div>
-      </article>
-    `;
-  }).join("");
+  grid.classList.toggle("work-list", !SHOW_MEDIA);
+  grid.innerHTML = brandWorks.map(renderWorkItemHTML).join("");
 }
 
 
@@ -96,7 +102,7 @@ function openModal(workId) {
   const imgEl  = document.getElementById("modal-img");
   const infoEl = document.getElementById("modal-info");
 
-  imgEl.style.cssText = w.image_url
+  imgEl.style.cssText = SHOW_MEDIA && w.image_url
     ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
     : `background: ${w.color};`;
 
@@ -139,8 +145,8 @@ function closeModal() {
 
 function initModal() {
   document.getElementById("works-grid")?.addEventListener("click", e => {
-    const card = e.target.closest(".work-card");
-    if (card) openModal(card.dataset.id);
+    const item = e.target.closest("[data-id]");
+    if (item) openModal(item.dataset.id);
   });
   document.getElementById("modal-backdrop")?.addEventListener("click", closeModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });

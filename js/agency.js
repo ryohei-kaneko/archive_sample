@@ -23,7 +23,8 @@ const ROSTER_ROLE_FILTER = {
   illustrator:  ["illustrator"],
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await window.CREDGE_READY;
   const params = new URLSearchParams(window.location.search);
   const id     = params.get("id");
   const agency = agencies.find(a => a.id === id);
@@ -189,24 +190,8 @@ function renderAgencyRoster() {
     return;
   }
 
-  grid.className = "creators-grid";
-  grid.innerHTML = roster.map(p => {
-    const imgContent = p.profile_image
-      ? `<img src="${p.profile_image}" alt="${p.name_en}" loading="lazy">`
-      : "";
-    const bgStyle = p.profile_image ? "" : `background: ${p.color};`;
-
-    return `
-      <a class="creator-card" href="person.html?id=${p.id}">
-        <div class="creator-card-img" style="${bgStyle}">${imgContent}</div>
-        <div class="creator-card-overlay">
-          <div class="creator-card-name">${p.name_en}</div>
-          ${p.name !== p.name_en ? `<div class="creator-card-sub">${p.name}</div>` : ""}
-          <div class="creator-card-role">${ROLE_LABEL[p.primary_role] || p.primary_role}</div>
-        </div>
-      </a>
-    `;
-  }).join("");
+  grid.className = SHOW_MEDIA ? "creators-grid" : "people-list";
+  grid.innerHTML = roster.map(p => renderPersonItemHTML(p)).join("");
 }
 
 
@@ -218,26 +203,13 @@ function renderAgencyWorks(agencyWorks) {
   if (countEl) countEl.textContent = agencyWorks.length;
 
   if (agencyWorks.length === 0) {
-    grid.innerHTML = `<div class="no-results">No works found.</div>`;
+    grid.innerHTML = `<div class="no-results">No collections found.</div>`;
     return;
   }
 
   grid.id = "works-grid";
-  grid.innerHTML = agencyWorks.map(w => {
-    const bg = w.image_url
-      ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
-      : `background: ${w.color};`;
-    return `
-      <article class="work-card" data-id="${w.id}">
-        <div class="card-photo" style="${bg}">
-          <div class="card-overlay">
-            <div class="card-overlay-brand">${w.brand || ""}</div>
-            <div class="card-overlay-title">${w.title}</div>
-          </div>
-        </div>
-      </article>
-    `;
-  }).join("");
+  grid.classList.toggle("work-list", !SHOW_MEDIA);
+  grid.innerHTML = agencyWorks.map(renderWorkItemHTML).join("");
 }
 
 
@@ -249,7 +221,7 @@ function openModal(workId) {
   const imgEl  = document.getElementById("modal-img");
   const infoEl = document.getElementById("modal-info");
 
-  imgEl.style.cssText = w.image_url
+  imgEl.style.cssText = SHOW_MEDIA && w.image_url
     ? `background: url('${w.image_url}') center/cover no-repeat, ${w.color};`
     : `background: ${w.color};`;
 
@@ -292,8 +264,8 @@ function closeModal() {
 
 function initModal() {
   document.getElementById("works-grid")?.addEventListener("click", e => {
-    const card = e.target.closest(".work-card");
-    if (card) openModal(card.dataset.id);
+    const item = e.target.closest("[data-id]");
+    if (item) openModal(item.dataset.id);
   });
   document.getElementById("modal-backdrop")?.addEventListener("click", closeModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
