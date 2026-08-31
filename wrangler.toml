@@ -1,0 +1,20 @@
+# Cloudflare Pages config for CREDGE.
+#
+# Setup (operator-only steps — see the "Scope/effort reality check" section
+# of /Users/admin/.claude/plans/splendid-chasing-hellman.md):
+#   1. wrangler login
+#   2. wrangler d1 create credge-db
+#      -> copy the printed database_id into the [[d1_databases]] block below
+#   3. wrangler d1 execute credge-db --remote --file=schema.sql
+#   4. node scripts/migrate-data-js-to-d1.mjs   (one-time data load)
+#   5. Connect this project to Cloudflare Pages (dashboard, GitHub-linked
+#      or `wrangler pages deploy .`)
+
+name = "credge"
+pages_build_output_dir = "."
+compatibility_date = "2026-08-30"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "credge-db"
+database_id = "649b38bc-9848-4cf2-be4a-25712d9188f7"

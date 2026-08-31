@@ -1,0 +1,13 @@
+{
+  "name": "credge",
+  "private": true,
+  "description": "CREDGE — static site + Cloudflare Pages Functions/D1 backend.",
+  "scripts": {
+    "migrate": "node scripts/migrate-data-js-to-d1.mjs",
+    "dev": "wrangler pages dev . --d1=DB",
+    "deploy": "wrangler pages deploy ."
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
